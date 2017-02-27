@@ -1,3 +1,11 @@
+#if !(NET10 || NET11 || NET20 || NET30 || NET35 || NET40 ) 
+#define NET45_OR_GREATER   
+#endif
+
+#if NET45_OR_GREATER && !(NET451 ) 
+#define NET451_OR_GREATER   
+#endif
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -12,6 +20,8 @@ using DokanNet.Logging;
 using DokanNet.Native;
 
 using FILETIME = System.Runtime.InteropServices.ComTypes.FILETIME;
+
+
 
 namespace DokanNet
 {
@@ -529,9 +539,7 @@ namespace DokanNet
                         logger.Debug("\t\tLength\t{0}", fi.Length);
                     }
 
-                    var fill =
-                        (FILL_FIND_FILE_DATA)
-                            Marshal.GetDelegateForFunctionPointer(rawFillFindData, typeof(FILL_FIND_FILE_DATA));
+                    var fill = GetDataFromPointer<FILL_FIND_FILE_DATA>(rawFillFindData);
 
                     // used a single entry call to speed up the "enumeration" of the list
                     foreach (var t in files)
@@ -579,9 +587,7 @@ namespace DokanNet
                         logger.Debug("\t\tLength\t{0}", fi.Length);
                     }
 
-                    var fill =
-                        (FILL_FIND_FILE_DATA)
-                            Marshal.GetDelegateForFunctionPointer(rawFillFindData, typeof(FILL_FIND_FILE_DATA));
+                    var fill = GetDataFromPointer<FILL_FIND_FILE_DATA>(rawFillFindData);
 
                     // used a single entry call to speed up the "enumeration" of the list
                     foreach (var t in files)
@@ -653,9 +659,7 @@ namespace DokanNet
                         logger.Debug("\t\tLength\t{0}", fi.Length);
                     }
 
-                    var fill =
-                        (FILL_FIND_STREAM_DATA)
-                            Marshal.GetDelegateForFunctionPointer(rawFillFindData, typeof(FILL_FIND_STREAM_DATA));
+                    var fill = GetDataFromPointer<FILL_FIND_STREAM_DATA>(rawFillFindData);
 
                     // used a single entry call to speed up the "enumeration" of the list
                     foreach (var t in files)
@@ -674,6 +678,14 @@ namespace DokanNet
             }
         }
 
+        private static T GetDataFromPointer<T>(IntPtr pointer) where T: class 
+        {
+#if NET451_OR_GREATER
+            return Marshal.GetDelegateForFunctionPointer<T>(pointer);
+#else
+            return Marshal.GetDelegateForFunctionPointer(pointer, typeof(T)) as T;
+#endif
+        }
         private static void AddTo(FILL_FIND_STREAM_DATA fill, DokanFileInfo rawFileInfo, FileInformation fi)
         {
             Debug.Assert(!string.IsNullOrEmpty(fi.FileName), "FileName must not be empty or null");
@@ -1159,7 +1171,7 @@ namespace DokanNet
                 : 0;
         }
 
-        #region Nested type: FILL_FIND_FILE_DATA
+#region Nested type: FILL_FIND_FILE_DATA
 
         /// <summary>
         /// Used to add an entry in <see cref="DokanOperationProxy.FindFilesProxy"/> and <see cref="DokanOperationProxy.FindFilesWithPatternProxy"/>.
@@ -1171,9 +1183,9 @@ namespace DokanNet
         private delegate long FILL_FIND_FILE_DATA(
             ref WIN32_FIND_DATA rawFindData, [MarshalAs(UnmanagedType.LPStruct), In] DokanFileInfo rawFileInfo);
 
-        #endregion Nested type: FILL_FIND_FILE_DATA
+#endregion Nested type: FILL_FIND_FILE_DATA
 
-        #region Nested type: FILL_FIND_STREAM_DATA
+#region Nested type: FILL_FIND_STREAM_DATA
 
         /// <summary>
         /// Used to add an entry in <see cref="DokanOperationProxy.FindStreamsProxy"/>.
@@ -1185,6 +1197,6 @@ namespace DokanNet
         private delegate long FILL_FIND_STREAM_DATA(
             ref WIN32_FIND_STREAM_DATA rawFindData, [MarshalAs(UnmanagedType.LPStruct), In] DokanFileInfo rawFileInfo);
 
-        #endregion Nested type: FILL_FIND_STREAM_DATA
+#endregion Nested type: FILL_FIND_STREAM_DATA
     }
 }

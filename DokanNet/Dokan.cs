@@ -252,19 +252,19 @@ namespace DokanNet
             switch (status)
             {
                 case DOKAN_ERROR:
-                    throw new DokanException(status, Resource.ErrorDokan);
+                    throw new DokanException(status, Resources.ErrorDokan);
                 case DOKAN_DRIVE_LETTER_ERROR:
-                    throw new DokanException(status, Resource.ErrorBadDriveLetter);
+                    throw new DokanException(status, Resources.ErrorBadDriveLetter);
                 case DOKAN_DRIVER_INSTALL_ERROR:
-                    throw new DokanException(status, Resource.ErrorDriverInstall);
+                    throw new DokanException(status, Resources.ErrorDriverInstall);
                 case DOKAN_MOUNT_ERROR:
-                    throw new DokanException(status, Resource.ErrorAssignDriveLetter);
+                    throw new DokanException(status, Resources.ErrorAssignDriveLetter);
                 case DOKAN_START_ERROR:
-                    throw new DokanException(status, Resource.ErrorStart);
+                    throw new DokanException(status, Resources.ErrorStart);
                 case DOKAN_MOUNT_POINT_ERROR:
-                    throw new DokanException(status, Resource.ErrorMountPointInvalid);
+                    throw new DokanException(status, Resources.ErrorMountPointInvalid);
                 case DOKAN_VERSION_ERROR:
-                    throw new DokanException(status, Resource.ErrorVersion);
+                    throw new DokanException(status, Resources.ErrorVersion);
             }
         }
 

@@ -62,10 +62,10 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <Choose>
-    <When Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <When Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' " >
       <ItemGroup>
         <Reference Include="DokanNet">
-          <HintPath>..\..\DokanNet\bin\Debug\NETv4.6\DokanNet.dll</HintPath>
+          <HintPath>..\..\DokanNet\bin\Release\netstandard1.3\DokanNet.dll</HintPath>
           <Private>True</Private>
         </Reference>
       </ItemGroup>
@@ -73,7 +73,7 @@
     <When Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
       <ItemGroup>
         <Reference Include="DokanNet">
-          <HintPath>..\..\DokanNet\bin\Release\NETv4.6\DokanNet.dll</HintPath>
+          <HintPath>..\..\DokanNet\bin\Release\netstandard1.3\DokanNet.dll</HintPath>
           <Private>True</Private>
         </Reference>
       </ItemGroup>
@@ -81,7 +81,7 @@
     <When Condition=" '$(Configuration)|$(Platform)' == 'Debug %28.NET 4.0%29|AnyCPU' ">
       <ItemGroup>
         <Reference Include="DokanNet">
-          <HintPath>..\..\DokanNet\bin\Debug\NETv4.0\DokanNet.dll</HintPath>
+          <HintPath>..\..\DokanNet\bin\Debug\net4.0\DokanNet.dll</HintPath>
           <Private>True</Private>
         </Reference>
       </ItemGroup>
@@ -89,7 +89,7 @@
     <When Condition=" '$(Configuration)|$(Platform)' == 'Release %28.NET 4.0%29|AnyCPU' ">
       <ItemGroup>
         <Reference Include="DokanNet">
-          <HintPath>..\..\DokanNet\bin\Release\NETv4.0\DokanNet.dll</HintPath>
+          <HintPath>..\..\DokanNet\bin\Release\net4.0\DokanNet.dll</HintPath>
           <Private>True</Private>
         </Reference>
       </ItemGroup>
