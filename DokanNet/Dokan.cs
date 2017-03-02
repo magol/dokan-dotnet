@@ -198,12 +198,12 @@ namespace DokanNet
             if(logger == null){
                 logger = new ConsoleLogger("[DokanNet] ");
             }
-#endif
+#else
             if (logger == null)
             {
                 logger = new NullLogger();
             }
-
+#endif
             var dokanOperationProxy = new DokanOperationProxy(operations, logger);
 
             var dokanOptions = new DOKAN_OPTIONS
