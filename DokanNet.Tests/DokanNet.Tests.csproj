@@ -58,14 +58,7 @@
     <CodeAnalysisRuleSet>DokanNet.Tests.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <Choose>
-    <When Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-      <ItemGroup>
-        <Reference Include="DokanNet">
-          <HintPath>..\DokanNet\bin\Debug\NETv4.6\DokanNet.dll</HintPath>
-          <Private>True</Private>
-        </Reference>
-      </ItemGroup>
-    </When>
+    <When Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' " />
     <When Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
       <ItemGroup>
         <Reference Include="DokanNet">
@@ -145,6 +138,12 @@
       <DependentUpon>OverlappedTests.cs</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DokanNet\DokanNet.csproj">
+      <Project>{cd78387d-1136-4143-8b71-1dbc2dd440df}</Project>
+      <Name>DokanNet</Name>
+    </ProjectReference>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

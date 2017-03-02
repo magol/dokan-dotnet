@@ -1,5 +1,4 @@
-﻿<!--EXTERNAL_PROPERTIES: TargetFramework-->
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>netstandard1.3;net4.0</TargetFrameworks>
@@ -44,7 +43,7 @@
     <PackageReference Include="System.Security.Principal" Version="4.3.0" />
     <PackageReference Include="System.Security.Principal.Windows" Version="4.3.0" />
   </ItemGroup>
-  
+
   <ItemGroup Condition="'$(TargetFramework)' == 'net4.0'">
     <PackageReference Include="StringInterpolationBridgeStrong" Version="0.9.1" />
   </ItemGroup>
