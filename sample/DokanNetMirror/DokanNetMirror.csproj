@@ -2,15 +2,27 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net4.0</TargetFramework>
+    <!--    <TargetFramework>net4.0</TargetFramework>-->
     <RuntimeIdentifier>win</RuntimeIdentifier>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug' or '$(Configuration)' == 'Release'">
+    <TargetFramework>net4.6</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug - net4.0' or '$(Configuration)' == 'Release - net4.0'">
+    <TargetFramework>net4.0</TargetFramework>
+  </PropertyGroup>
+  
   <ItemGroup>
     <ProjectReference Include="..\..\DokanNet\DokanNet.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="StringInterpolationBridgeStrong" Version="0.9.1" />
+    <PackageReference Include="StringInterpolationBridgeStrong" Version="0.9.1" Condition="'$(TargetFramework)' == 'net4.0'" />
   </ItemGroup>
+  
+  <!--  <ItemGroup Condition="'$(TargetFramework)' == 'net4.0'">
+    <PackageReference Include="StringInterpolationBridgeStrong" Version="0.9.1" />
+  </ItemGroup>-->
 </Project>

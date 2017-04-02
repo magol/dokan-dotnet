@@ -14,7 +14,15 @@
     <Authors>MaximeC</Authors>
     <PackageProjectUrl>https://github.com/dokan-dev/dokan-dotnet</PackageProjectUrl>
     <RepositoryUrl>https://github.com/dokan-dev/dokan-dotnet</RepositoryUrl>
+    <SignAssembly>True</SignAssembly>
+    <AssemblyOriginatorKeyFile>Dokan.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="documentations\**" />
+    <EmbeddedResource Remove="documentations\**" />
+    <None Remove="documentations\**" />
+  </ItemGroup>
  
   <ItemGroup>
     <Compile Remove="Properties\AssemblyInfo.cs" />

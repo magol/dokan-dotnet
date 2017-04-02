@@ -8,11 +8,13 @@ namespace System.Reflection
 {
     /// <summary>Contains methods for converting <see cref="T:System.Type" /> objects.</summary>
     /// <remarks>This extension is missing in .NET framework 4.0 and below.</remarks>
-    public static class IntrospectionExtensions
+    internal static class IntrospectionExtensions
     {
-        /// <summary>Returns the <see cref="T:System.Reflection.TypeInfo" /> representation of the specified type.</summary>
-        /// <returns>The converted object.</returns>
-        /// <param name="type">The type to convert.</param>
+        /// <summary>In .NET Framework 4.5 and over, this method return a <see cref="T:System.Reflection.TypeInfo" /> representation of the specified type.
+        ///          In .NET Framework 4.0 and below, all information in <see cref="T:System.Reflection.TypeInfo" /> is in <see cref="System.Type"/>, 
+        ///          and this method returns <paramref name="type"/> with no changes.</summary>
+        /// <returns><paramref name="type"/> with no changes.</returns>
+        /// <param name="type">The type to return.</param>
         public static Type GetTypeInfo(this Type type)
         {
             return type;
