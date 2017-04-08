@@ -12,7 +12,7 @@ using FileAccess = DokanNet.FileAccess;
 
 namespace DokanNetMirror
 {
-    internal class Mirror : IDokanOperations
+    internal class Mirror : IDokanOperationsV2
     {
         private readonly string path;
 
@@ -68,7 +68,7 @@ namespace DokanNetMirror
 
         #region Implementation of IDokanOperations
 
-        public NtStatus CreateFile(string fileName, FileAccess access, FileShare share, FileMode mode,
+        public NtStatus CreateFile(string fileName, DokanFileSystemSecurity fileSystemSecurity, FileAccess access, FileShare share, FileMode mode,
             FileOptions options, FileAttributes attributes, DokanFileInfo info)
         {
             var result = NtStatus.Success;
@@ -76,6 +76,14 @@ namespace DokanNetMirror
 
             if (info.IsDirectory)
             {
+                var directorySecurity = fileSystemSecurity.GetAsDirectorySecurity();
+
+                if (directorySecurity == null)
+                {
+                    return Trace(nameof(CreateFile), fileName, info, access, share, mode, options, attributes,
+                        DokanResult.InvalidParameter);
+                }
+
                 try
                 {
                     switch (mode)
@@ -117,7 +125,7 @@ namespace DokanNetMirror
                             {
                             }
 
-                            Directory.CreateDirectory(GetPath(fileName));
+                            Directory.CreateDirectory(GetPath(fileName), directorySecurity);
                             break;
                     }
                 }
@@ -127,13 +135,21 @@ namespace DokanNetMirror
                         DokanResult.AccessDenied);
                 }
             }
-            else
+            else   // It is a file
             {
                 var pathExists = true;
                 var pathIsDirectory = false;
 
                 var readWriteAttributes = (access & DataAccess) == 0;
                 var readAccess = (access & DataWriteAccess) == 0;
+
+                var fileSecutiry = fileSystemSecurity.GetAsFileSecurity();
+
+                if (fileSecutiry == null)
+                {
+                    return Trace(nameof(CreateFile), fileName, info, access, share, mode, options, attributes,
+                        DokanResult.InvalidParameter);
+                }
 
                 try
                 {
@@ -189,9 +205,10 @@ namespace DokanNetMirror
 
                 try
                 {
-                    info.Context = new FileStream(filePath, mode,
+                    var stream = new FileStream(filePath, mode,
                         readAccess ? System.IO.FileAccess.Read : System.IO.FileAccess.ReadWrite, share, 4096, options);
-
+                    stream.SetAccessControl(fileSecutiry);
+                    info.Context = stream;
                     if (pathExists && (mode == FileMode.OpenOrCreate
                         || mode == FileMode.Create))
                         result = DokanResult.AlreadyExists;
@@ -225,6 +242,12 @@ namespace DokanNetMirror
             }
             return Trace(nameof(CreateFile), fileName, info, access, share, mode, options, attributes,
                 result);
+        }
+
+        public NtStatus CreateFile(string fileName, FileAccess access, FileShare share, FileMode mode, FileOptions options,
+            FileAttributes attributes, DokanFileInfo info)
+        {
+            throw new NotImplementedException();
         }
 
         public void Cleanup(string fileName, DokanFileInfo info)

@@ -301,6 +301,12 @@ namespace DokanNet
                 var desiredAccess  = (FileAccess    )(rawDesiredAccess       & FileAccessMask);
                 var shareAccess    = (FileShare     )(rawShareAccess         & FileShareMask);
 
+
+                var ioSecurityContext =
+                    (DOKAN_IO_SECURITY_CONTEXT) Marshal.PtrToStructure(securityContext,
+                        typeof(DOKAN_IO_SECURITY_CONTEXT));
+                var security = new DokanFileSystemSecurity(ioSecurityContext.AccessState.SecurityDescriptor);
+                
                 logger.Debug("CreateFileProxy : {0}", rawFileName);
                 logger.Debug("\tCreationDisposition\t{0}", (FileMode)creationDisposition);
                 logger.Debug("\tFileAccess\t{0}", (FileAccess)rawDesiredAccess);
@@ -308,14 +314,31 @@ namespace DokanNet
                 logger.Debug("\tFileOptions\t{0}", fileOptions);
                 logger.Debug("\tFileAttributes\t{0}", fileAttributes);
                 logger.Debug("\tContext\t{0}", rawFileInfo);
-                var result = operations.CreateFile(
-                    rawFileName,
-                    desiredAccess,
-                    shareAccess,
-                    (FileMode)creationDisposition,
-                    fileOptions,
-                    fileAttributes,
-                    rawFileInfo);
+
+                NtStatus result;
+                if (operations is IDokanOperationsV2 v2)
+                {
+                    result = v2.CreateFile(
+                        rawFileName,
+                        security,
+                        desiredAccess,
+                        shareAccess,
+                        (FileMode) creationDisposition,
+                        fileOptions,
+                        fileAttributes,
+                        rawFileInfo);
+                }
+                else
+                {
+                    result = operations.CreateFile(
+                        rawFileName,
+                        desiredAccess,
+                        shareAccess,
+                        (FileMode) creationDisposition,
+                        fileOptions,
+                        fileAttributes,
+                        rawFileInfo);
+                }
 
                 logger.Debug("CreateFileProxy : {0} Return : {1}", rawFileName, result);
                 return result;
@@ -1134,19 +1157,17 @@ namespace DokanNet
             {
                 sect |= AccessControlSections.Audit;
             }
-            var buffer = new byte[rawSecurityDescriptorLength];
             try
             {
-                Marshal.Copy(rawSecurityDescriptor, buffer, 0, (int)rawSecurityDescriptorLength);
-                var sec = rawFileInfo.IsDirectory ? (FileSystemSecurity)new DirectorySecurity() : new FileSecurity();
-                sec.SetSecurityDescriptorBinaryForm(buffer);
+                var securityDescriptor = ConvertRawSecurityDescriptor(rawSecurityDescriptor, rawSecurityDescriptorLength,
+                    rawFileInfo.IsDirectory);
 
                 logger.Debug("SetFileSecurityProxy : {0}", rawFileName);
                 logger.Debug("\tAccessControlSections\t{0}", sect);
-                logger.Debug("\tFileSystemSecurity\t{0}", sec);
+                logger.Debug("\tFileSystemSecurity\t{0}", securityDescriptor);
                 logger.Debug("\tContext\t{0}", rawFileInfo);
 
-                var result = operations.SetFileSecurity(rawFileName, sec, sect, rawFileInfo);
+                var result = operations.SetFileSecurity(rawFileName, securityDescriptor, sect, rawFileInfo);
 
                 logger.Debug("SetFileSecurityProxy : {0} Return : {1}", rawFileName, result);
                 return result;
@@ -1178,7 +1199,29 @@ namespace DokanNet
                 : 0;
         }
 
-#region Nested type: FILL_FIND_FILE_DATA
+        /// <summary>
+        /// TODO
+        /// </summary>
+        /// <param name="rawSecurityDescriptor"></param>
+        /// <param name="length"></param>
+        /// <param name="isDirectory"></param>
+        /// <returns></returns>
+        [Pure]
+        private static FileSystemSecurity ConvertRawSecurityDescriptor(IntPtr rawSecurityDescriptor, uint length,
+            bool isDirectory)
+        {
+            var buffer = new byte[length];
+
+            Marshal.Copy(rawSecurityDescriptor, buffer, 0, (int)length);
+            var security = isDirectory
+                ? (FileSystemSecurity) new DirectorySecurity()
+                : new FileSecurity();
+            security.SetSecurityDescriptorBinaryForm(buffer);
+
+            return security;
+        }
+
+        #region Nested type: FILL_FIND_FILE_DATA
 
         /// <summary>
         /// Used to add an entry in <see cref="DokanOperationProxy.FindFilesProxy"/> and <see cref="DokanOperationProxy.FindFilesWithPatternProxy"/>.

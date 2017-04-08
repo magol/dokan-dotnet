@@ -413,6 +413,47 @@ namespace DokanNet
         /// \see <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa365993(v=vs.85).aspx">About KTM (MSDN)</a>
         NtStatus FindStreams(string fileName, out IList<FileInformation> streams, DokanFileInfo info);
     }
+    public interface IDokanOperationsV2 : IDokanOperations
+    {
+        /// <summary>
+        /// CreateFile is called each time a request is made on a file system object.
+        /// 
+        /// In case <paramref name="mode"/> is <c><see cref="FileMode.OpenOrCreate"/></c> and
+        /// <c><see cref="FileMode.Create"/></c> and CreateFile are successfully opening a already
+        /// existing file, you have to return <see cref="DokanResult.AlreadyExists"/> instead of <see cref="NtStatus.Success"/>.
+        /// 
+        /// If the file is a directory, CreateFile is also called.
+        /// In this case, CreateFile should return <see cref="NtStatus.Success"/> when that directory
+        /// can be opened and <see cref="DokanFileInfo.IsDirectory"/> has to be set to <c>true</c>.
+        /// On the other hand, if <see cref="DokanFileInfo.IsDirectory"/> is set to <c>true</c>
+        /// but the path target a file, you need to return <see cref="NtStatus.NotADirectory"/>
+        /// 
+        /// <see cref="DokanFileInfo.Context"/> can be used to store data (like <c><see cref="FileStream"/></c>)
+        /// that can be retrieved in all other request related to the context.
+        /// </summary>
+        /// <param name="fileName">File path requested by the Kernel on the FileSystem.</param>
+        /// <param name="fileSystemSecurity">TODO</param>
+        /// <param name="access">A <see cref="FileAccess"/> with permissions for file or directory.</param>
+        /// <param name="share">Type of share access to other threads, which is specified as
+        /// <see cref="FileShare.None"/> or any combination of <see cref="FileShare"/>.
+        /// Device and intermediate drivers usually set ShareAccess to zero,
+        /// which gives the caller exclusive access to the open file.</param>
+        /// <param name="mode">Specifies how the operating system should open a file. See <a href="https://msdn.microsoft.com/en-us/library/system.io.filemode(v=vs.110).aspx">FileMode Enumeration (MSDN)</a>.</param>
+        /// <param name="options">Represents advanced options for creating a FileStream object. See <a href="https://msdn.microsoft.com/en-us/library/system.io.fileoptions(v=vs.110).aspx">FileOptions Enumeration (MSDN)</a>.</param>
+        /// <param name="attributes">Provides attributes for files and directories. See <a href="https://msdn.microsoft.com/en-us/library/system.io.fileattributes(v=vs.110).aspx">FileAttributes Enumeration (MSDN></a>.</param>
+        /// <param name="info">An <see cref="DokanFileInfo"/> with information about the file or directory.</param>
+        /// <returns><see cref="NtStatus"/> or <see cref="DokanResult"/> appropriate to the request result.</returns>
+        /// \see See <a href="https://msdn.microsoft.com/en-us/library/windows/hardware/ff566424(v=vs.85).aspx">ZwCreateFile (MSDN)</a> for more information about the parameters of this callback.
+        NtStatus CreateFile(
+            string fileName,
+            DokanFileSystemSecurity fileSystemSecurity,
+            FileAccess access,
+            FileShare share,
+            FileMode mode,
+            FileOptions options,
+            FileAttributes attributes,
+            DokanFileInfo info);
+    }
 }
 
 /// <summary>
