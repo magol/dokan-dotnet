@@ -2,43 +2,13 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <!--<TargetFrameworks>netstandard1.3;netstandard2.0;net4.0</TargetFrameworks>-->
+    <TargetFrameworks>net4.6;net4.0</TargetFrameworks>
     <RuntimeIdentifier>win</RuntimeIdentifier>
   </PropertyGroup>
-  
-  <Target Name="DisplayMessages">
-    <Message Text="Project File Name = $(MSBuildProjectFile)" />
-    <Message Text="Project Extension = $(MSBuildProjectExtension)" />
-    <Message Text="Configuration     = $(Configuration)" Importance="high" />
-  </Target>
 
-  <!-- <PropertyGroup Condition="'$(Configuration)' == 'Debug' or '$(Configuration)' == 'Release'">
-    <TargetFramework>net4.6</TargetFramework>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)' == 'Debug - net4.0' or '$(Configuration)' == 'Release - net4.0'">
-    <TargetFramework>net4.0</TargetFramework>
-  </PropertyGroup>-->
-
-
-  <PropertyGroup Condition="$(Configuration.EndsWith('net4.0')) != true">
-    <TargetFramework>net4.6</TargetFramework>
-  </PropertyGroup>
-  
-  <PropertyGroup Condition="$(Configuration.EndsWith('net4.0'))">
-    <TargetFramework>net4.0</TargetFramework>
-  </PropertyGroup>
-
-  
   <ItemGroup Condition="'$(TargetFramework)' == 'net4.6'">
     <ProjectReference Include="..\..\DokanNet\DokanNet.csproj" SetTargetFramework="TargetFramework=netstandard1.3" />
-  </ItemGroup>
-  
-  <ItemGroup Condition="'$(TargetFramework)' == 'net4.0'">
-    <ProjectReference Include="..\..\DokanNet\DokanNet.csproj" />
-  </ItemGroup>
 
-  <ItemGroup>
     <PackageReference Include="System.Diagnostics.Contracts" Version="4.3.0" />
     <PackageReference Include="System.Diagnostics.TraceSource" Version="4.3.0" />
     <PackageReference Include="System.IO.FileSystem.AccessControl" Version="4.3.0" />
@@ -46,8 +16,7 @@
     <PackageReference Include="System.Security.Principal.Windows" Version="4.3.0" />
   </ItemGroup>
   
-  <!--<ItemGroup>
-    <PackageReference Include="StringInterpolationBridgeStrong" Version="0.9.1" Condition="$(Configuration.EndsWith('net4.0')) == true" />
-  </ItemGroup>-->
-
+  <ItemGroup Condition="'$(TargetFramework)' == 'net4.0'">
+    <ProjectReference Include="..\..\DokanNet\DokanNet.csproj" />
+  </ItemGroup>
 </Project>
