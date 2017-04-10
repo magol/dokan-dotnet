@@ -2,7 +2,7 @@
 #define NET45_OR_GREATER   
 #endif
 
-#if NET45_OR_GREATER && !(NET451 ) 
+#if NET45_OR_GREATER && !(NET45 ) 
 #define NET451_OR_GREATER   
 #endif
 
