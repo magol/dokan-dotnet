@@ -48,7 +48,7 @@ after_build:
          & .\winfstest\TestSuite\run-winfstest.bat t\base N:\TMP
          Start-Sleep -s 5
          Stop-Process $app.Id
-	  }
+      }
 test:
   categories:
     except:
