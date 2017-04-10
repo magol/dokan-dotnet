@@ -5,9 +5,7 @@ environment:
 version: 1.0.0-{build}
 configuration:
 - Release
-- Release - net40
 - Debug
-- Debug - net40
 os: Visual Studio 2017
 branches:
   only:
@@ -32,23 +30,25 @@ build:
   verbosity: minimal
 after_build:
   - ps: |
-      $app = Start-Process -passthru .\sample\DokanNetMirror\bin\$env:CONFIGURATION\DokanNetMirror.exe
-      Start-Sleep -s 5
-      
-      git clone https://github.com/Liryna/winfstest.git
-      $buildCmd = "C:\Program Files (x86)\MSBuild\14.0\Bin\MSBuild.exe"
-      $buildArgs = @(
-      ".\winfstest\winfstest.sln",
-      "/m",
-      "/l:C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll",
-      "/p:Configuration=Debug",
-      "/p:Platform=x64")
-      
-      New-Item C:\TMP -type directory
-      & $buildCmd $buildArgs
-      & .\winfstest\TestSuite\run-winfstest.bat t\base N:\TMP
-      Start-Sleep -s 5
-      Stop-Process $app.Id
+      foreach ($target in @("net4.6", "net4.0")) {
+         $app = Start-Process -passthru .\sample\DokanNetMirror\bin\$env:CONFIGURATION\$target\win\DokanNetMirror.exe
+         Start-Sleep -s 5
+         
+         git clone https://github.com/Liryna/winfstest.git
+         $buildCmd = "C:\Program Files (x86)\MSBuild\14.0\Bin\MSBuild.exe"
+         $buildArgs = @(
+         ".\winfstest\winfstest.sln",
+         "/m",
+         "/l:C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll",
+         "/p:Configuration=Debug",
+         "/p:Platform=x64")
+         
+         New-Item C:\TMP -type directory
+         & $buildCmd $buildArgs
+         & .\winfstest\TestSuite\run-winfstest.bat t\base N:\TMP
+         Start-Sleep -s 5
+         Stop-Process $app.Id
+	  }
 test:
   categories:
     except:
