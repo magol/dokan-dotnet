@@ -59,12 +59,9 @@ namespace DokanNet
         /// </summary>
         public object Context
         {
-            get
-            {
-                return _context != 0 
-                    ? ((GCHandle)(IntPtr)_context).Target 
-                    : null;
-            }
+            get => _context != 0 
+                ? ((GCHandle)(IntPtr)_context).Target 
+                : null;
             set
             {
                 if (_context != 0)
@@ -93,8 +90,8 @@ namespace DokanNet
         /// </summary>
         public bool IsDirectory
         {
-            get { return _isDirectory; }
-            set { _isDirectory = value; }
+            get => _isDirectory;
+            set => _isDirectory = value;
         }
 
         /// <summary>
@@ -103,8 +100,8 @@ namespace DokanNet
         /// </summary>
         public bool DeleteOnClose
         {
-            get { return _deleteOnClose; }
-            set { _deleteOnClose = value; }
+            get => _deleteOnClose;
+            set => _deleteOnClose = value;
         }
 
         /// <summary>

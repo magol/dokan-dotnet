@@ -5,10 +5,10 @@ environment:
 version: 1.0.0-{build}
 configuration:
 - Release
-- Release (.NET 4.0)
+- Release - net40
 - Debug
-- Debug (.NET 4.0)
-os: Visual Studio 2015
+- Debug - net40
+os: Visual Studio 2017
 branches:
   only:
     - master
