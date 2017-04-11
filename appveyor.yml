@@ -11,6 +11,9 @@ branches:
   only:
     - master
 
+init:
+  - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+
 install:
  - ps: |
      Add-Type -AssemblyName System.IO.Compression.FileSystem
@@ -30,21 +33,22 @@ build:
   verbosity: minimal
 after_build:
   - ps: |
-      foreach ($target in @("net4.6", "net4.0")) {
-         $app = Start-Process -passthru .\sample\DokanNetMirror\bin\$env:CONFIGURATION\$target\win\DokanNetMirror.exe
-         Start-Sleep -s 5
-         
-         git clone https://github.com/Liryna/winfstest.git
-         $buildCmd = "C:\Program Files (x86)\MSBuild\14.0\Bin\MSBuild.exe"
-         $buildArgs = @(
+      git clone https://github.com/Liryna/winfstest.git
+      $buildCmd = "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\MSBuild\15.0\Bin\MSBuild.exe"
+      $buildArgs = @(
          ".\winfstest\winfstest.sln",
          "/m",
          "/l:C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll",
          "/p:Configuration=Debug",
          "/p:Platform=x64")
+      & $buildCmd $buildArgs
+      New-Item C:\TMP -type directory
+      
+      foreach ($target in @("net4.6", "net4.0")) {
+         Write-Host "Run Windows file system testing for $target..." -ForegroundColor Green
+         $app = Start-Process -passthru .\sample\DokanNetMirror\bin\$env:CONFIGURATION\$target\win\DokanNetMirror.exe
+         Start-Sleep -s 5
          
-         New-Item C:\TMP -type directory
-         & $buildCmd $buildArgs
          & .\winfstest\TestSuite\run-winfstest.bat t\base N:\TMP
          Start-Sleep -s 5
          Stop-Process $app.Id
@@ -78,3 +82,6 @@ on_success:
                 Write-Host "No documentation changes detected." -ForegroundColor Green
               }
           }
+
+on_finish:
+  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
