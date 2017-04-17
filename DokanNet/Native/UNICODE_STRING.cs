@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom;
 using System.Runtime.InteropServices;
 
 namespace DokanNet.Native
@@ -49,6 +50,16 @@ namespace DokanNet.Native
         {
             return Marshal.PtrToStringUni(_buffer)
                    ?? string.Empty;
+        }
+
+        public static explicit operator UNICODE_STRING(string s)
+        {
+            return new UNICODE_STRING(s);
+        }
+
+        public static implicit operator string(UNICODE_STRING s)
+        {
+            return s.ToString();
         }
     }
 }
