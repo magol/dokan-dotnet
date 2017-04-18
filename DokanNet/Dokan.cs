@@ -194,16 +194,14 @@ namespace DokanNet
             int threadCount, int version, TimeSpan timeout, string uncName = null, int allocationUnitSize = 512,
             int sectorSize = 512, ILogger logger = null)
         {
-#if TRACE
-            if(logger == null){
-                logger = new ConsoleLogger("[DokanNet] ");
-            }
-#else
             if (logger == null)
             {
+#if TRACE
+                logger = new ConsoleLogger("[DokanNet] ");
+#else
                 logger = new NullLogger();
-            }
 #endif
+            }
             var dokanOperationProxy = new DokanOperationProxy(operations, logger);
 
             var dokanOptions = new DOKAN_OPTIONS

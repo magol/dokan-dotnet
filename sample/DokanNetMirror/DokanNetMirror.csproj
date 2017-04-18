@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net4.0</TargetFramework>
+    <TargetFrameworks>net4.6;net4.0</TargetFrameworks>
     <RuntimeIdentifier>win</RuntimeIdentifier>
   </PropertyGroup>
 
@@ -10,7 +10,7 @@
     <ProjectReference Include="..\..\DokanNet\DokanNet.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net4.0'">
     <PackageReference Include="StringInterpolationBridgeStrong" Version="0.9.1" />
   </ItemGroup>
 </Project>

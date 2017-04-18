@@ -2,15 +2,8 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
+    <TargetFrameworks>net4.6;net4.0</TargetFrameworks>
     <RuntimeIdentifier>win</RuntimeIdentifier>
-  </PropertyGroup>
-  
-  <PropertyGroup Condition="'$(Configuration)' == 'Debug' or '$(Configuration)' == 'Release'">
-    <TargetFramework>net46</TargetFramework>
-  </PropertyGroup>
-  
-  <PropertyGroup Condition="'$(Configuration)' == 'Debug - net4.0' or '$(Configuration)' == 'Release - net4.0'">
-    <TargetFramework>net40</TargetFramework>
   </PropertyGroup>
  
   <ItemGroup>
