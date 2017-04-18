@@ -34,7 +34,7 @@ build:
 after_build:
   - ps: |
       git clone https://github.com/Liryna/winfstest.git
-      $buildCmd = "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\MSBuild\15.0\Bin\MSBuild.exe"
+      $buildCmd = "MSBuild.exe"
       $buildArgs = @(
          ".\winfstest\winfstest.sln",
          "/m",
@@ -44,7 +44,7 @@ after_build:
       & $buildCmd $buildArgs
       New-Item C:\TMP -type directory
       
-      foreach ($target in @("net4.6", "net4.0")) {
+      foreach ($target in @("net4.6", "net4.0", "netcoreapp1.0")) {
          Write-Host "Run Windows file system testing for $target..." -ForegroundColor Green
          $app = Start-Process -passthru .\sample\DokanNetMirror\bin\$env:CONFIGURATION\$target\win\DokanNetMirror.exe
          Start-Sleep -s 5
