@@ -2,9 +2,13 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>net4.6;net4.0</TargetFrameworks>
+    <TargetFrameworks>net4.6;net4.0;netcoreapp1.0</TargetFrameworks>
     <RuntimeIdentifier>win</RuntimeIdentifier>
   </PropertyGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp1.0'">
+    <PackageReference Include="Microsoft.Win32.Registry" Version="4.3.0" />
+  </ItemGroup>
  
   <ItemGroup>
     <ProjectReference Include="..\..\DokanNet\DokanNet.csproj" />
