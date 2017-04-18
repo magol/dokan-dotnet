@@ -44,7 +44,7 @@ after_build:
       & $buildCmd $buildArgs
       New-Item C:\TMP -type directory
       
-      foreach ($target in @("net4.6", "net4.0", "netcoreapp1.0")) {
+      foreach ($target in @("net4.6", "net4.0")) {
          Write-Host "Run Windows file system testing for $target..." -ForegroundColor Green
          $app = Start-Process -passthru .\sample\DokanNetMirror\bin\$env:CONFIGURATION\$target\win\DokanNetMirror.exe
          Start-Sleep -s 5
