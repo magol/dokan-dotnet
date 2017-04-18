@@ -202,6 +202,7 @@ namespace DokanNet
                 logger = new NullLogger();
 #endif
             }
+
             var dokanOperationProxy = new DokanOperationProxy(operations, logger);
 
             var dokanOptions = new DOKAN_OPTIONS

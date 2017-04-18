@@ -2,7 +2,7 @@
 #define NET45_OR_GREATER   
 #endif
 
-#if NET45_OR_GREATER && !(NET451 ) 
+#if NET45_OR_GREATER && !(NET45 ) 
 #define NET451_OR_GREATER   
 #endif
 
@@ -467,8 +467,7 @@ namespace DokanNet
                 logger.Debug("GetFileInformationProxy : {0}", rawFileName);
                 logger.Debug("\tContext\t{0}", rawFileInfo);
 
-                FileInformation fi;
-                var result = operations.GetFileInformation(rawFileName, out fi, rawFileInfo);
+                var result = operations.GetFileInformation(rawFileName, out FileInformation fi, rawFileInfo);
 
                 if (result == DokanResult.Success)
                 {
@@ -519,12 +518,11 @@ namespace DokanNet
         {
             try
             {
-                IList<FileInformation> files;
 
                 logger.Debug("FindFilesProxy : {0}", rawFileName);
                 logger.Debug("\tContext\t{0}", rawFileInfo);
 
-                var result = operations.FindFiles(rawFileName, out files, rawFileInfo);
+                var result = operations.FindFiles(rawFileName, out IList<FileInformation> files, rawFileInfo);
 
                 Debug.Assert(files != null, "Files must not be null");
                 if (result == DokanResult.Success && files.Count != 0)
@@ -566,13 +564,12 @@ namespace DokanNet
         {
             try
             {
-                IList<FileInformation> files;
 
                 logger.Debug("FindFilesWithPatternProxy : {0}", rawFileName);
                 logger.Debug("\trawSearchPattern\t{0}", rawSearchPattern);
                 logger.Debug("\tContext\t{0}", rawFileInfo);
 
-                var result = operations.FindFilesWithPattern(rawFileName, rawSearchPattern, out files, rawFileInfo);
+                var result = operations.FindFilesWithPattern(rawFileName, rawSearchPattern, out IList<FileInformation> files, rawFileInfo);
 
                 Debug.Assert(files != null, "Files must not be null");
                 if (result == DokanResult.Success && files.Any())
@@ -643,12 +640,11 @@ namespace DokanNet
         {
             try
             {
-                IList<FileInformation> files;
 
                 logger.Debug("FindStreamsProxy: {0}", rawFileName);
                 logger.Debug("\tContext\t{0}", rawFileInfo);
 
-                var result = operations.FindStreams(rawFileName, out files, rawFileInfo);
+                var result = operations.FindStreams(rawFileName, out IList<FileInformation> files, rawFileInfo);
 
                 Debug.Assert(!(result == DokanResult.NotImplemented && files == null));
                 if (result == DokanResult.Success && files.Count != 0)
@@ -975,9 +971,7 @@ namespace DokanNet
             {
                 logger.Debug("GetVolumeInformationProxy:");
                 logger.Debug("\tContext\t{0}", rawFileInfo);
-                string label;
-                string name;
-                var result = operations.GetVolumeInformation(out label, out rawFileSystemFlags, out name, rawFileInfo);
+                var result = operations.GetVolumeInformation(out string label, out rawFileSystemFlags, out string name, rawFileInfo);
 
                 if (result == DokanResult.Success)
                 {
@@ -1075,8 +1069,7 @@ namespace DokanNet
                 logger.Debug("\tFileSystemSecurity\t{0}", sect);
                 logger.Debug("\tContext\t{0}", rawFileInfo);
 
-                FileSystemSecurity sec;
-                var result = operations.GetFileSecurity(rawFileName, out sec, sect, rawFileInfo);
+                var result = operations.GetFileSecurity(rawFileName, out FileSystemSecurity sec, sect, rawFileInfo);
                 if (result == DokanResult.Success /*&& sec != null*/)
                 {
                     Debug.Assert(sec != null, $"{nameof(sec)} must not be null");

@@ -4,8 +4,8 @@
       "commandName": "Project"
     },
     "DokanNetMirror (net4.0)": {
-      "commandName": "Executable",
-      "executablePath": "$(ProjectDir)\\bin\\$(Configuration)\\net4.0\\win\\DokanNetMirror.exe"
+        "commandName": "Executable",
+        "executablePath": "bin\\$(Configuration)\\net4.0\\win\\DokanNetMirror.exe"
     }
   }
 }

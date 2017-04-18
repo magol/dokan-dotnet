@@ -59,8 +59,8 @@ namespace DokanNet
         /// </summary>
         public object Context
         {
-            get => _context != 0
-                ? ((GCHandle)(IntPtr)_context).Target
+            get => _context != 0 
+                ? ((GCHandle)(IntPtr)_context).Target 
                 : null;
             set
             {
