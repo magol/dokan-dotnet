@@ -11,8 +11,13 @@ branches:
   only:
     - master
 
+# To debug build issues, add your own fork to AppVeyor and uncomment below.
+# Connection details will be printed to the console output.
+# $blockRdp makes the build block until a file is deleted from the desktop.
 init:
-  - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+- ps: Invoke-Expression (Invoke-WebRequest 'https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1')
+on_finish:
+- ps: $blockRdp = $true; Invoke-Expression (Invoke-WebRequest 'https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1')
 
 install:
  - ps: |
@@ -53,7 +58,7 @@ after_build:
          & .\winfstest\TestSuite\run-winfstest.bat t\base N:\TMP
          Start-Sleep -s 5
          Stop-Process $app.Id
-         Start-Sleep -s 5
+         Start-Sleep -s 10
       }
 test:
   categories:
@@ -84,6 +89,3 @@ on_success:
                 Write-Host "No documentation changes detected." -ForegroundColor Green
               }
           }
-
-on_finish:
-  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
