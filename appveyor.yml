@@ -38,6 +38,25 @@ build:
   verbosity: minimal
 after_build:
   - ps: |
+    #Stop the mirror process and wait for the driver to be unmounted.
+    Function Stop-Mirror {
+        param(
+            [Parameter(Position=0,Mandatory=1)][System.ComponentModel.Component] $app
+        )
+        Stop-Process -Id $app.Id
+        Wait-Process -Id $app.Id
+    
+        $countdown = 1
+        while ((Test-Path 'N:\'))
+        {
+            Write-output "Waiting for unmount and Counting down $Countdown"
+            Start-Sleep -Seconds 1
+            if($countdown++ -ge 5) {
+                Throw "It took more than 5 seconds to unmount"
+            }
+        }
+    }
+  - ps: |
       git clone https://github.com/Liryna/winfstest.git
       $buildCmd = "MSBuild.exe"
       $buildArgs = @(
@@ -57,8 +76,7 @@ after_build:
          
          & .\winfstest\TestSuite\run-winfstest.bat t\base N:\TMP
          Start-Sleep -s 5
-         Stop-Process $app.Id
-         Start-Sleep -s 10
+         Stop-Mirror($app)
       }
 test:
   categories:
