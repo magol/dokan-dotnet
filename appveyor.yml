@@ -44,7 +44,7 @@ after_build:
               [Parameter(Position=0,Mandatory=1)][System.ComponentModel.Component] $app
           )
           Stop-Process -Id $app.Id
-          Wait-Process -Id $app.Id
+          Wait-Process -Id $app.Id -EA SilentlyContinue
           
           $countdown = 1
           while ((Test-Path 'N:\'))
@@ -57,7 +57,7 @@ after_build:
           }
       }
   - ps: |
-      git clone https://github.com/Liryna/winfstest.git
+      git clone -q https://github.com/Liryna/winfstest.git
       $buildCmd = "MSBuild.exe"
       $buildArgs = @(
          ".\winfstest\winfstest.sln",
