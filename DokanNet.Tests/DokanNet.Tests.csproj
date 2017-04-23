@@ -1,6 +1,21 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>    
-    <TargetFramework>net4.6</TargetFramework>
+  <PropertyGroup>
+    <!--
+    Each target framework is testing against a specific target framework of Dokan.
+    
+    To be able to test against netstandard1.3, .NET CORE 1.X needs to be used, 
+    but unfortunately, too much functionality is missing for it to work. 
+    Maybe it will work with .NET CORE 2.0 when launched.
+    
+    To be able to test net4.0, we have to use net4.5 when it is the lowest supported framework by MSTest.
+    
+    DokanNet            Test
+    **************************
+    net4.0              net4.5
+    net4.6              net4.6
+    netstandard1.3      <missing>
+    -->
+    <TargetFrameworks>net4.5;net4.6</TargetFrameworks>
   </PropertyGroup>
   
   <ItemGroup>
@@ -15,7 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.0.0" />
+  <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.0.0" />
     <PackageReference Include="Moq" Version="4.7.1" />
     <PackageReference Include="MSTest.TestAdapter" Version="1.1.12" />
     <PackageReference Include="MSTest.TestFramework" Version="1.1.11" />
