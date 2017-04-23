@@ -3,11 +3,11 @@
     <!--
     Each target framework is testing against a specific target framework of Dokan.
     
-    To be able to test against netstandard1.3, .NET CORE 1.X needs to be used, 
-    but unfortunately, too much functionality is missing for it to work. 
-    Maybe it will work with .NET CORE 2.0 when launched.
+    To be able to test against netstandard1.3, .NET Core 1.X needs to be used, 
+    but unfortunately, too much functionality is missing for it to work (e.g. TestContext.DataRow). 
+    Maybe it will work with .NET Core 2.0 when launched.
     
-    To be able to test net4.0, we have to use net4.5 when it is the lowest supported framework by MSTest.
+    To be able to test net4.0, we have to use net4.5 (the lowest supported framework by MSTest).
     
     DokanNet            Test
     **************************
@@ -16,6 +16,9 @@
     netstandard1.3      <missing>
     -->
     <TargetFrameworks>net4.5;net4.6</TargetFrameworks>
+    
+    <!--Add the Target Framework to the output file names. -->
+    <AssemblyName>$(MSBuildProjectName).$(TargetFramework)</AssemblyName>
   </PropertyGroup>
   
   <ItemGroup>
@@ -38,9 +41,5 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DokanNet\DokanNet.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
   </ItemGroup>
 </Project>
