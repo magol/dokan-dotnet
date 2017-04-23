@@ -34,7 +34,7 @@ namespace DokanNet.Tests
         {
             mounterThread.Abort();
             Dokan.Unmount(DokanOperationsFixture.MOUNT_POINT[0]);
-            Dokan.RemoveMountPoint(DokanOperationsFixture.MOUNT_POINT.ToString(CultureInfo.InvariantCulture));
+            Dokan.RemoveMountPoint(DokanOperationsFixture.MOUNT_POINT);
         }
     }
 }
