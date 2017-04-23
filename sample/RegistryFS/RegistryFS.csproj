@@ -10,4 +10,9 @@
     <ProjectReference Include="..\..\DokanNet\DokanNet.csproj" />
   </ItemGroup>
 
+  <PropertyGroup>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <!--Set to True to run Code Analysis-->
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+  </PropertyGroup>
 </Project>

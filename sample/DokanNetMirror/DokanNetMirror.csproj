@@ -13,5 +13,10 @@
   <ItemGroup Condition="'$(TargetFramework)' == 'net4.0'">
     <PackageReference Include="StringInterpolationBridgeStrong" Version="0.9.1" />
   </ItemGroup>
-    
+
+  <PropertyGroup>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <!--Set to True to run Code Analysis-->
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+  </PropertyGroup>
 </Project>

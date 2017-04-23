@@ -19,6 +19,7 @@
     
     <!--Add the Target Framework to the output file names. -->
     <AssemblyName>$(MSBuildProjectName).$(TargetFramework)</AssemblyName>
+    <CLSCompliant>True</CLSCompliant>
   </PropertyGroup>
   
   <ItemGroup>
@@ -45,6 +46,7 @@
 
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
     <CodeAnalysisRuleSet>DokanNet.Tests.ruleset</CodeAnalysisRuleSet>
-    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <!--Set to True to run Code Analysis-->
+    <RunCodeAnalysis>False</RunCodeAnalysis>
   </PropertyGroup>
 </Project>

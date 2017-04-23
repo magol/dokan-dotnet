@@ -22,6 +22,7 @@ This is a .NET wrapper over Dokan, and allows you to create your own file system
     <PackageTags>dokan file files disk directory storage filesystem io filestore FAT NTFS FUSE</PackageTags>
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>Dokan.snk</AssemblyOriginatorKeyFile>
+    <CLSCompliant>True</CLSCompliant>
   </PropertyGroup>
 
   <ItemGroup>
@@ -57,4 +58,9 @@ This is a .NET wrapper over Dokan, and allows you to create your own file system
     <PackageReference Include="StringInterpolationBridgeStrong" Version="0.9.1" />
   </ItemGroup>
 
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <!--Set to True to run Code Analysis-->
+    <RunCodeAnalysis>False</RunCodeAnalysis>
+  </PropertyGroup>
 </Project>
