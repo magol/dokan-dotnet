@@ -37,7 +37,7 @@ namespace DokanNet.Tests
 #if LOGONLY
             fixture.SetupAny();
 #else
-            var attributes = FileAttributes.Directory;
+            const FileAttributes attributes = FileAttributes.Directory;
             var creationTime = new DateTime(2015, 1, 1, 12, 0, 0);
             var lastWriteTime = new DateTime(2015, 3, 31, 12, 0, 0);
             var lastAccessTime = new DateTime(2015, 4, 1, 6, 0, 0);
@@ -137,7 +137,7 @@ namespace DokanNet.Tests
 
             var sut = new DirectoryInfo(path.AsDriveBasedPath());
 
-            Assert.AreEqual(DokanOperationsFixture.RootName.AsDriveBasedPath(), sut.Parent.FullName, "Unexpected parent directory");
+            Assert.AreEqual(DokanOperationsFixture.RootName.AsDriveBasedPath(), sut.Parent?.FullName, "Unexpected parent directory");
 
 #if !LOGONLY
             fixture.Verify();
@@ -220,7 +220,7 @@ namespace DokanNet.Tests
             fixture.ExpectOpenDirectory(DokanOperationsFixture.RootName, FileAccess.Synchronize, FileShare.None);
             fixture.ExpectFindFiles(DokanOperationsFixture.RootName, new[]
             {
-                new FileInformation()
+                new FileInformation
                 {
                     FileName = path, Attributes = FileAttributes.Normal,
                     Length = 0,
@@ -347,9 +347,9 @@ namespace DokanNet.Tests
 
             var fixture = DokanOperationsFixture.Instance;
 
-            string path = fixture.DirectoryName.AsRootedPath(),
-                subFileName = "SubFile.ext",
-                subFilePath = Path.DirectorySeparatorChar + subFileName;
+            var path = fixture.DirectoryName.AsRootedPath();
+            const string subFileName = "SubFile.ext";
+            var subFilePath = Path.DirectorySeparatorChar + subFileName;
 #if LOGONLY
             fixture.SetupAny();
 #else
@@ -360,7 +360,7 @@ namespace DokanNet.Tests
             {
                 fixture.ExpectFindFilesWithPattern(path, "*", DokanOperationsFixture.GetEmptyDirectoryDefaultFiles().Concat(new[]
                     {
-                        new FileInformation()
+                        new FileInformation
                         {
                             FileName = subFileName, Attributes = FileAttributes.Normal,
                             Length = 100,
@@ -373,7 +373,7 @@ namespace DokanNet.Tests
                 fixture.ExpectFindFilesWithPatternToFail(path, "*", DokanResult.NotImplemented);
                 fixture.ExpectFindFiles(path, DokanOperationsFixture.GetEmptyDirectoryDefaultFiles().Concat(new[]
                 {
-                    new FileInformation()
+                    new FileInformation
                     {
                         FileName = subFileName, Attributes = FileAttributes.Normal,
                         Length = 100,
@@ -567,7 +567,7 @@ namespace DokanNet.Tests
             var fixture = DokanOperationsFixture.Instance;
 
             var path = DokanOperationsFixture.RootName;
-            var filter = "*r2";
+            const string filter = "*r2";
             var regex = new Regex(filter.Replace('?', '.').Replace("*", ".*"));
 #if LOGONLY
             fixture.SetupAny();
@@ -575,7 +575,8 @@ namespace DokanNet.Tests
             fixture.ExpectOpenDirectory(path);
             if (supportsPatternSearch)
             {
-                fixture.ExpectFindFilesWithPattern(path, filter, fixture.RootDirectoryItems.Where(i => regex.IsMatch(i.FileName)).ToList());
+                fixture.ExpectFindFilesWithPattern(path, filter,
+                    fixture.RootDirectoryItems.Where(i => regex.IsMatch(i.FileName ?? string.Empty)).ToList());
             }
             else
             {
@@ -592,7 +593,8 @@ namespace DokanNet.Tests
 #else
             CollectionAssert.AreEqual(
                 fixture.RootDirectoryItems.Where(
-                    i => i.Attributes.HasFlag(FileAttributes.Directory) && regex.IsMatch(i.FileName))
+                        i => i.Attributes.HasFlag(FileAttributes.Directory) &&
+                             regex.IsMatch(i.FileName ?? string.Empty))
                     .Select(i => i.FileName)
                     .ToArray(),
                 sut.GetDirectories(filter).Select(d => d.Name).ToArray(),
@@ -697,7 +699,7 @@ namespace DokanNet.Tests
             var fixture = DokanOperationsFixture.Instance;
 
             var path = DokanOperationsFixture.RootName;
-            var filter = "*bD*";
+            const string filter = "*bD*";
             var regex = new Regex(filter.Replace('?', '.').Replace("*", ".*"));
 #if LOGONLY
             fixture.SetupAny();
@@ -705,7 +707,8 @@ namespace DokanNet.Tests
             fixture.ExpectOpenDirectory(path);
             if (supportsPatternSearch)
             {
-                fixture.ExpectFindFilesWithPattern(path, filter, fixture.RootDirectoryItems.Where(i => regex.IsMatch(i.FileName)).ToList());
+                fixture.ExpectFindFilesWithPattern(path, filter,
+                    fixture.RootDirectoryItems.Where(i => regex.IsMatch(i.FileName ?? string.Empty)).ToList());
             }
             else
             {
@@ -721,7 +724,8 @@ namespace DokanNet.Tests
             Console.WriteLine(sut.GetFiles(filter).Length);
 #else
             CollectionAssert.AreEqual(
-                fixture.RootDirectoryItems.Where(i => i.Attributes.HasFlag(FileAttributes.Normal) && regex.IsMatch(i.FileName))
+                fixture.RootDirectoryItems.Where(i => i.Attributes.HasFlag(FileAttributes.Normal) &&
+                                                      regex.IsMatch(i.FileName ?? string.Empty))
                     .Select(i => i.FileName)
                     .ToArray(),
                 sut.GetFiles(filter).Select(f => f.Name).ToArray(),
@@ -886,7 +890,7 @@ namespace DokanNet.Tests
             var fixture = DokanOperationsFixture.Instance;
 
             var path = DokanOperationsFixture.RootName;
-            var filter = "*bD*";
+            const string filter = "*bD*";
             var regex = new Regex(filter.Replace('?', '.').Replace("*", ".*"));
 #if LOGONLY
             fixture.SetupAny();
@@ -894,7 +898,8 @@ namespace DokanNet.Tests
             fixture.ExpectOpenDirectory(path);
             if (supportsPatternSearch)
             {
-                fixture.ExpectFindFilesWithPattern(path, filter, fixture.RootDirectoryItems.Where(i => regex.IsMatch(i.FileName)).ToList());
+                fixture.ExpectFindFilesWithPattern(path, filter,
+                    fixture.RootDirectoryItems.Where(i => regex.IsMatch(i.FileName ?? string.Empty)).ToList());
             }
             else
             {
@@ -910,7 +915,9 @@ namespace DokanNet.Tests
             Console.WriteLine(sut.GetFileSystemInfos(filter).Length);
 #else
             CollectionAssert.AreEqual(
-                fixture.RootDirectoryItems.Where(i => regex.IsMatch(i.FileName)).Select(i => i.FileName).ToArray(),
+                fixture.RootDirectoryItems.Where(i => regex.IsMatch(i.FileName ?? string.Empty))
+                    .Select(i => i.FileName)
+                    .ToArray(),
                 sut.GetFileSystemInfos(filter).Select(f => f.Name).ToArray(),
                 nameof(sut.GetFileSystemInfos));
 
@@ -960,7 +967,10 @@ namespace DokanNet.Tests
             Console.WriteLine(sut.GetFileSystemInfos().Length);
 #else
             CollectionAssert.AreEqual(
-                pathsAndItems.Select(p => p.Items.Where(f => f.FileName.Any(c => c != '.'))).Aggregate((i1, i2) => i1.Union(i2).ToArray()).Select(i => i.FileName).ToArray(),
+                pathsAndItems.Select(p => p.Items.Where(f => f.FileName?.Any(c => c != '.') ?? false))
+                    .Aggregate((i1, i2) => i1.Union(i2).ToArray())
+                    .Select(i => i.FileName)
+                    .ToArray(),
                 sut.GetFileSystemInfos("*", SearchOption.AllDirectories).Select(f => f.Name).ToArray(),
                 nameof(sut.GetFileSystemInfos));
 

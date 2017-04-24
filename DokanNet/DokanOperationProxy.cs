@@ -499,7 +499,7 @@ namespace DokanNet
                     rawHandleFileInformation.nFileSizeHigh = (uint)(fi.Length >> 32);
                     rawHandleFileInformation.dwNumberOfLinks = 1;
                     rawHandleFileInformation.nFileIndexHigh = 0;
-                    rawHandleFileInformation.nFileIndexLow = (uint)(fi.FileName?.GetHashCode() ?? 0);
+                    rawHandleFileInformation.nFileIndexLow = (uint)fi.FileName?.GetHashCode();
                 }
 
                 logger.Debug("GetFileInformationProxy : {0} Return : {1}", rawFileName, result);
@@ -1159,7 +1159,7 @@ namespace DokanNet
         [Pure]
         private static long ToFileTime(DateTime? dateTime)
         {
-            return dateTime.HasValue && (dateTime.Value >= DateTime.FromFileTime(0))
+            return dateTime.HasValue && dateTime.Value >= DateTime.FromFileTime(0)
                 ? dateTime.Value.ToFileTime()
                 : 0;
         }

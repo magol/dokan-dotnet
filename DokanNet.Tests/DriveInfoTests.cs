@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static DokanNet.Tests.FileSettings;
@@ -20,8 +19,7 @@ namespace DokanNet.Tests
         [TestCleanup]
         public void Cleanup()
         {
-            var hasUnmatchedInvocations = false;
-            DokanOperationsFixture.ClearInstance(out hasUnmatchedInvocations);
+            DokanOperationsFixture.ClearInstance(out bool hasUnmatchedInvocations);
             Assert.IsFalse(hasUnmatchedInvocations, "Found Mock invocations without corresponding setups");
         }
 
@@ -33,7 +31,7 @@ namespace DokanNet.Tests
 #if LOGONLY
             fixture.SetupAny();
 #else
-            var availableFreeSpace = 1 << 10;
+            const int availableFreeSpace = 1 << 10;
             fixture.ExpectGetDiskFreeSpace(freeBytesAvailable: availableFreeSpace);
 #endif
 
@@ -144,7 +142,7 @@ namespace DokanNet.Tests
 #if LOGONLY
             fixture.SetupAny();
 #else
-            var totalFreeSpace = 1 << 14;
+            const int totalFreeSpace = 1 << 14;
             fixture.ExpectGetDiskFreeSpace(totalNumberOfFreeBytes: totalFreeSpace);
 #endif
 
@@ -167,7 +165,7 @@ namespace DokanNet.Tests
 #if LOGONLY
             fixture.SetupAny();
 #else
-            var totalSize = 1 << 20;
+            const int totalSize = 1 << 20;
             fixture.ExpectGetDiskFreeSpace(totalNumberOfBytes: totalSize);
 #endif
 

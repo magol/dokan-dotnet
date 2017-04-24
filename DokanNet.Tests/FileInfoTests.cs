@@ -102,7 +102,7 @@ namespace DokanNet.Tests
 
             var sut = new FileInfo(path.AsDriveBasedPath());
 
-            Assert.AreEqual(DokanOperationsFixture.RootName.AsDriveBasedPath(), sut.Directory.FullName,
+            Assert.AreEqual(DokanOperationsFixture.RootName.AsDriveBasedPath(), sut.Directory?.FullName,
                 "Unexpected parent directory");
 
 #if !LOGONLY
@@ -222,7 +222,7 @@ namespace DokanNet.Tests
             var fixture = DokanOperationsFixture.Instance;
 
             var path = fixture.FileName.AsRootedPath();
-            string value = $"TestValue for test {nameof(AppendText_CallsApiCorrectly)}";
+            var value = $"TestValue for test {nameof(AppendText_CallsApiCorrectly)}";
 #if LOGONLY
             fixture.SetupAny();
 #else
@@ -283,7 +283,7 @@ namespace DokanNet.Tests
 
             string path = fixture.FileName.AsRootedPath(),
                 destinationPath = fixture.DestinationFileName.AsRootedPath();
-            string value = $"TestValue for test {nameof(CopyTo_WhereSourceIsNonEmpty_CallsApiCorrectly)}";
+            var value = $"TestValue for test {nameof(CopyTo_WhereSourceIsNonEmpty_CallsApiCorrectly)}";
 #if LOGONLY
             fixture.SetupAny();
 #else
@@ -405,7 +405,7 @@ namespace DokanNet.Tests
             var fixture = DokanOperationsFixture.Instance;
 
             var path = fixture.FileName.AsRootedPath();
-            string value = $"TestValue for test {nameof(Create_CallsApiCorrectly)}";
+            var value = $"TestValue for test {nameof(Create_CallsApiCorrectly)}";
 #if LOGONLY
             fixture.SetupAny();
 #else
@@ -433,7 +433,7 @@ namespace DokanNet.Tests
             var fixture = DokanOperationsFixture.Instance;
 
             var path = fixture.FileName.AsRootedPath();
-            string value = $"TestValue for test {nameof(CreateText_CallsApiCorrectly)}";
+            var value = $"TestValue for test {nameof(CreateText_CallsApiCorrectly)}";
 #if LOGONLY
             fixture.SetupAny();
 #else
@@ -870,7 +870,7 @@ namespace DokanNet.Tests
             var fixture = DokanOperationsFixture.Instance;
 
             var path = fixture.FileName.AsRootedPath();
-            string value = $"TestValue for test {nameof(OpenRead_CallsApiCorrectly)}";
+            var value = $"TestValue for test {nameof(OpenRead_CallsApiCorrectly)}";
 #if LOGONLY
             fixture.SetupAny();
 #else
@@ -903,7 +903,7 @@ namespace DokanNet.Tests
             var fixture = DokanOperationsFixture.Instance;
 
             var path = fixture.FileName.AsRootedPath();
-            string value = $"TestValue for test {nameof(OpenRead_WithDelay_CallsApiCorrectly)}";
+            var value = $"TestValue for test {nameof(OpenRead_WithDelay_CallsApiCorrectly)}";
 #if LOGONLY
             fixture.SetupAny();
 #else
@@ -1107,7 +1107,7 @@ namespace DokanNet.Tests
             var fixture = DokanOperationsFixture.Instance;
 
             var path = fixture.FileName.AsRootedPath();
-            string value = $"TestValue for test {nameof(OpenRead_WithLockingAndUnlocking_CallsApiCorrectly)}";
+            var value = $"TestValue for test {nameof(OpenRead_WithLockingAndUnlocking_CallsApiCorrectly)}";
 #if LOGONLY
             fixture.SetupAny();
 #else
@@ -1143,7 +1143,7 @@ namespace DokanNet.Tests
             var fixture = DokanOperationsFixture.Instance;
 
             var path = fixture.FileName.AsRootedPath();
-            string value = $"TestValue for test {nameof(OpenText_CallsApiCorrectly)}";
+            var value = $"TestValue for test {nameof(OpenText_CallsApiCorrectly)}";
 #if LOGONLY
             fixture.SetupAny();
 #else
@@ -1175,7 +1175,7 @@ namespace DokanNet.Tests
             var fixture = DokanOperationsFixture.Instance;
 
             var path = fixture.FileName.AsRootedPath();
-            string value = $"TestValue for test {nameof(OpenWrite_CallsApiCorrectly)}";
+            var value = $"TestValue for test {nameof(OpenWrite_CallsApiCorrectly)}";
 #if LOGONLY
             fixture.SetupAny();
 #else
@@ -1208,7 +1208,7 @@ namespace DokanNet.Tests
             var fixture = DokanOperationsFixture.Instance;
 
             var path = fixture.FileName.AsRootedPath();
-            string value = $"TestValue for test {nameof(OpenWrite_WithDelay_CallsApiCorrectly)}";
+            var value = $"TestValue for test {nameof(OpenWrite_WithDelay_CallsApiCorrectly)}";
 #if LOGONLY
             fixture.SetupAny();
 #else
@@ -1409,7 +1409,7 @@ namespace DokanNet.Tests
             var fixture = DokanOperationsFixture.Instance;
 
             var path = fixture.FileName.AsRootedPath();
-            string value = $"TestValue for test {nameof(OpenWrite_WithFlush_CallsApiCorrectly)}";
+            var value = $"TestValue for test {nameof(OpenWrite_WithFlush_CallsApiCorrectly)}";
 #if LOGONLY
             fixture.SetupAny();
 #else
@@ -1446,7 +1446,7 @@ namespace DokanNet.Tests
             var fixture = DokanOperationsFixture.Instance;
 
             var path = fixture.FileName.AsRootedPath();
-            string value = $"TestValue for test {nameof(OpenWrite_WithLockingAndUnlocking_CallsApiCorrectly)}";
+            var value = $"TestValue for test {nameof(OpenWrite_WithLockingAndUnlocking_CallsApiCorrectly)}";
 #if LOGONLY
             fixture.SetupAny();
 #else

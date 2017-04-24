@@ -47,8 +47,7 @@ namespace DokanNet.Tests
         [TestCleanup]
         public void Cleanup()
         {
-            var hasUnmatchedInvocations = false;
-            DokanOperationsFixture.ClearInstance(out hasUnmatchedInvocations);
+            DokanOperationsFixture.ClearInstance(out bool hasUnmatchedInvocations);
             Assert.IsFalse(hasUnmatchedInvocations, "Found Mock invocations without corresponding setups");
         }
 
@@ -58,7 +57,7 @@ namespace DokanNet.Tests
             var fixture = DokanOperationsFixture.Instance;
 
             var path = fixture.FileName.AsRootedPath();
-            string value = $"TestValue for test {nameof(Create_PassesContextCorrectly)}";
+            var value = $"TestValue for test {nameof(Create_PassesContextCorrectly)}";
             var context = new object();
 #if LOGONLY
             fixture.SetupAny();
@@ -87,7 +86,7 @@ namespace DokanNet.Tests
             var fixture = DokanOperationsFixture.Instance;
 
             var path = fixture.FileName.AsRootedPath();
-            string value = $"TestValue for test {nameof(OpenRead_PassesContextCorrectly)}";
+            var value = $"TestValue for test {nameof(OpenRead_PassesContextCorrectly)}";
             var context = new object();
 #if LOGONLY
             fixture.SetupAny();
@@ -101,7 +100,7 @@ namespace DokanNet.Tests
             using (var stream = sut.OpenRead())
             {
                 var target = new byte[value.Length];
-                var readBytes = stream.Read(target, 0, target.Length);
+                stream.Read(target, 0, target.Length);
             }
 
 #if !LOGONLY
@@ -160,7 +159,6 @@ namespace DokanNet.Tests
             using (var stream = sut.OpenRead())
             {
                 var target = new byte[largeData.Length];
-                var totalReadBytes = 0;
 
                 Parallel.For(0, DokanOperationsFixture.NumberOfChunks(FILE_BUFFER_SIZE, largeData.Length), i =>
                 {
@@ -169,7 +167,7 @@ namespace DokanNet.Tests
                     lock (stream)
                     {
                         stream.Seek(origin, SeekOrigin.Begin);
-                        totalReadBytes += stream.Read(target, origin, count);
+                        stream.Read(target, origin, count);
                     }
                 });
             }
@@ -185,7 +183,7 @@ namespace DokanNet.Tests
             var fixture = DokanOperationsFixture.Instance;
 
             var path = fixture.FileName.AsRootedPath();
-            string value = $"TestValue for test {nameof(OpenWrite_PassesContextCorrectly)}";
+            var value = $"TestValue for test {nameof(OpenWrite_PassesContextCorrectly)}";
             var context = new object();
 #if LOGONLY
             fixture.SetupAny();
@@ -264,8 +262,6 @@ namespace DokanNet.Tests
 
             using (var stream = sut.OpenWrite())
             {
-                var totalWrittenBytes = 0;
-
                 Parallel.For(0, DokanOperationsFixture.NumberOfChunks(FILE_BUFFER_SIZE, largeData.Length), i =>
                 {
                     var origin = i*FILE_BUFFER_SIZE;
@@ -274,7 +270,6 @@ namespace DokanNet.Tests
                     {
                         stream.Seek(origin, SeekOrigin.Begin);
                         stream.Write(largeData, origin, count);
-                        totalWrittenBytes += count;
                     }
                 });
             }

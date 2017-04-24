@@ -160,6 +160,77 @@ namespace DokanNet
                 DokanFormat(
                     $"{{{Context}, {DeleteOnClose}, {IsDirectory}, {NoCache}, {PagingIo}, #{ProcessId}, {SynchronousIo}, {WriteToEndOfFile}}}");
         }
+
+        /// <summary>Indicates whether this instance and a specified object are equal.</summary>
+        /// <param name="other">The object to compare with the current instance. </param>
+        /// <returns><c>true</c> if <paramref name="other" /> and this instance are represent the same value; 
+        /// otherwise, <c>false</c>. </returns>
+        private bool Equals(DokanFileInfo other)
+        {
+            return
+                _context == other._context &&
+                _dokanContext == other._dokanContext &&
+                _dokanOptions.Equals(other._dokanOptions) &&
+                _processId == other._processId &&
+                _isDirectory == other._isDirectory &&
+                _deleteOnClose == other._deleteOnClose &&
+                _pagingIo == other._pagingIo &&
+                _synchronousIo == other._synchronousIo &&
+                _noCache == other._noCache &&
+                _writeToEndOfFile == other._writeToEndOfFile;
+        }
+
+        /// <summary>Indicates whether this instance and a specified object are equal.</summary>
+        /// <param name="obj">The object to compare with the current instance. </param>
+        /// <returns><c>true</c> if <paramref name="obj" /> and this instance are the same type and represent the same value; 
+        /// otherwise, <c>false</c>. </returns>
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            var o = obj as DokanFileInfo;
+            return o != null && Equals(o);
+        }
+
+        /// <summary>Returns the hash code for this instance.</summary>
+        /// <returns>A 32-bit signed integer that is the hash code for this instance.</returns>
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = _context.GetHashCode();
+                hashCode = (hashCode * 397) ^ _dokanContext.GetHashCode();
+                hashCode = (hashCode * 397) ^ _dokanOptions.GetHashCode();
+                hashCode = (hashCode * 397) ^ (int) _processId;
+                hashCode = (hashCode * 397) ^ _isDirectory.GetHashCode();
+                hashCode = (hashCode * 397) ^ _deleteOnClose.GetHashCode();
+                hashCode = (hashCode * 397) ^ _pagingIo.GetHashCode();
+                hashCode = (hashCode * 397) ^ _synchronousIo.GetHashCode();
+                hashCode = (hashCode * 397) ^ _noCache.GetHashCode();
+                hashCode = (hashCode * 397) ^ _writeToEndOfFile.GetHashCode();
+                return hashCode;
+            }
+        }
+
+        /// <summary>Indicates whether two objects are equal.</summary>
+        /// <param name="left">The first object to compare. </param>
+        /// <param name="right">The secound object to compare. </param>
+        /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are represent the same value; 
+        /// otherwise, <c>false</c>. </returns>
+        public static bool operator ==(DokanFileInfo left, DokanFileInfo right)
+        {
+            return Equals(left, right);
+        }
+
+        /// <summary>Indicates whether two objects are not equal.</summary>
+        /// <param name="left">The first object to compare. </param>
+        /// <param name="right">The secound object to compare. </param>
+        /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are not represent the same value; 
+        /// otherwise, <c>false</c>. </returns>
+        public static bool operator !=(DokanFileInfo left, DokanFileInfo right)
+        {
+            return !Equals(left, right);
+        }
     }
 }
 
