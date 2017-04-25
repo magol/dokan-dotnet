@@ -1,4 +1,9 @@
-﻿using System;
+﻿#if !LOGONLY
+#define NOTLOGONLY
+#endif
+
+using System;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
@@ -34,9 +39,8 @@ namespace DokanNet.Tests
             var fixture = DokanOperationsFixture.Instance;
 
             var path = fixture.DirectoryName.AsRootedPath();
-#if LOGONLY
-            fixture.SetupAny();
-#else
+            PermitAnyIfOnlyLogging(fixture);
+#if NOTLOGONLY
             const FileAttributes attributes = FileAttributes.Directory;
             var creationTime = new DateTime(2015, 1, 1, 12, 0, 0);
             var lastWriteTime = new DateTime(2015, 3, 31, 12, 0, 0);
@@ -60,9 +64,8 @@ namespace DokanNet.Tests
             Assert.AreEqual(creationTime, sut.CreationTime, nameof(sut.CreationTime));
             Assert.AreEqual(lastWriteTime, sut.LastWriteTime, nameof(sut.LastWriteTime));
             Assert.AreEqual(lastAccessTime, sut.LastAccessTime, nameof(sut.LastAccessTime));
-
-            fixture.Verify();
 #endif
+            Verify(fixture);
         }
 
         [TestMethod, TestCategory(TestCategories.Success)]
@@ -71,9 +74,8 @@ namespace DokanNet.Tests
             var fixture = DokanOperationsFixture.Instance;
 
             var path = fixture.DirectoryName;
-#if LOGONLY
-            fixture.SetupAny();
-#else
+            PermitAnyIfOnlyLogging(fixture);
+#if NOTLOGONLY
             fixture.ExpectCreateFile(path.AsRootedPath(), ReadAttributesAccess, ReadWriteShare, FileMode.Open);
             fixture.ExpectGetFileInformation(path.AsRootedPath(), FileAttributes.Directory);
 #endif
@@ -81,9 +83,7 @@ namespace DokanNet.Tests
             var sut = new DirectoryInfo(path.AsDriveBasedPath());
             Assert.IsTrue(sut.Exists, "Directory should exist");
 
-#if !LOGONLY
-            fixture.Verify();
-#endif
+            Verify(fixture);
         }
 
         [TestMethod, TestCategory(TestCategories.Failure)]
@@ -92,18 +92,15 @@ namespace DokanNet.Tests
             var fixture = DokanOperationsFixture.Instance;
 
             var path = fixture.DirectoryName;
-#if LOGONLY
-            fixture.SetupAny();
-#else
+            PermitAnyIfOnlyLogging(fixture);
+#if NOTLOGONLY
             fixture.ExpectCreateFileToFail(path.AsRootedPath(), DokanResult.PathNotFound);
 #endif
 
             var sut = new DirectoryInfo(path.AsDriveBasedPath());
             Assert.IsFalse(sut.Exists, "Directory should not exist");
 
-#if !LOGONLY
-            fixture.Verify();
-#endif
+            Verify(fixture);
         }
 
         [TestMethod, TestCategory(TestCategories.Success)]
@@ -112,17 +109,13 @@ namespace DokanNet.Tests
             var fixture = DokanOperationsFixture.Instance;
 
             var path = fixture.DirectoryName.AsRootedPath();
-#if LOGONLY
-            fixture.SetupAny();
-#endif
+            PermitAnyIfOnlyLogging(fixture);
 
             var sut = new DirectoryInfo(fixture.DirectoryName.AsDriveBasedPath());
 
             Assert.AreEqual(Path.GetExtension(path), sut.Extension, "Unexpected extension");
 
-#if !LOGONLY
-            fixture.Verify();
-#endif
+            Verify(fixture);
         }
 
         [TestMethod, TestCategory(TestCategories.Success)]
@@ -131,17 +124,13 @@ namespace DokanNet.Tests
             var fixture = DokanOperationsFixture.Instance;
 
             var path = fixture.DirectoryName;
-#if LOGONLY
-            fixture.SetupAny();
-#endif
+            PermitAnyIfOnlyLogging(fixture);
 
             var sut = new DirectoryInfo(path.AsDriveBasedPath());
 
             Assert.AreEqual(DokanOperationsFixture.RootName.AsDriveBasedPath(), sut.Parent?.FullName, "Unexpected parent directory");
 
-#if !LOGONLY
-            fixture.Verify();
-#endif
+            Verify(fixture);
         }
 
         [TestMethod, TestCategory(TestCategories.Success)]
@@ -150,17 +139,13 @@ namespace DokanNet.Tests
             var fixture = DokanOperationsFixture.Instance;
 
             var path = fixture.DirectoryName;
-#if LOGONLY
-            fixture.SetupAny();
-#endif
+            PermitAnyIfOnlyLogging(fixture);
 
             var sut = new DirectoryInfo(path.AsDriveBasedPath());
 
             Assert.AreEqual(DokanOperationsFixture.RootName.AsDriveBasedPath(), sut.Root.FullName, "Unexpected parent directory");
 
-#if !LOGONLY
-            fixture.Verify();
-#endif
+            Verify(fixture);
         }
 
         [TestMethod, TestCategory(TestCategories.Success)]
@@ -169,9 +154,8 @@ namespace DokanNet.Tests
             var fixture = DokanOperationsFixture.Instance;
 
             var path = fixture.DirectoryName;
-#if LOGONLY
-            fixture.SetupAny();
-#else
+            PermitAnyIfOnlyLogging(fixture);
+#if NOTLOGONLY
             fixture.ExpectCreateFileToFail(path.AsRootedPath(), DokanResult.PathNotFound);
             fixture.ExpectCreateDirectory(path.AsRootedPath());
 #endif
@@ -179,9 +163,7 @@ namespace DokanNet.Tests
             var sut = new DirectoryInfo(path.AsDriveBasedPath());
             sut.Create();
 
-#if !LOGONLY
-            fixture.Verify();
-#endif
+            Verify(fixture);
         }
 
         [TestMethod, TestCategory(TestCategories.Success)]
@@ -190,9 +172,8 @@ namespace DokanNet.Tests
             var fixture = DokanOperationsFixture.Instance;
 
             var path = fixture.DirectoryName;
-#if LOGONLY
-            fixture.SetupAny();
-#else
+            PermitAnyIfOnlyLogging(fixture);
+#if NOTLOGONLY
             fixture.ExpectCreateFile(path.AsRootedPath(), ReadAttributesAccess, ReadWriteShare, FileMode.Open);
             fixture.ExpectGetFileInformation(path.AsRootedPath(), FileAttributes.Directory);
 #endif
@@ -200,9 +181,7 @@ namespace DokanNet.Tests
             var sut = new DirectoryInfo(path.AsDriveBasedPath());
             sut.Create();
 
-#if !LOGONLY
-            fixture.Verify();
-#endif
+            Verify(fixture);
         }
 
         [TestMethod, TestCategory(TestCategories.Failure)]
@@ -212,9 +191,8 @@ namespace DokanNet.Tests
             var fixture = DokanOperationsFixture.Instance;
 
             var path = fixture.DirectoryName;
-#if LOGONLY
-            fixture.SetupAny();
-#else
+            PermitAnyIfOnlyLogging(fixture);
+#if NOTLOGONLY
             fixture.ExpectCreateFile(path.AsRootedPath(), ReadAttributesAccess, ReadWriteShare, FileMode.Open);
             fixture.ExpectGetFileInformation(path.AsRootedPath(), FileAttributes.Normal);
             fixture.ExpectOpenDirectory(DokanOperationsFixture.RootName, FileAccess.Synchronize, FileShare.None);
@@ -241,9 +219,8 @@ namespace DokanNet.Tests
 
             string basePath = fixture.DirectoryName,
                 path = Path.Combine(basePath, fixture.SubDirectoryName);
-#if LOGONLY
-            fixture.SetupAny();
-#else
+            PermitAnyIfOnlyLogging(fixture);
+#if NOTLOGONLY
             fixture.ExpectCreateFileToFail(path.AsRootedPath(), DokanResult.FileNotFound);
             fixture.ExpectCreateFile(basePath.AsRootedPath(), ReadAttributesAccess, ReadWriteShare, FileMode.Open);
             fixture.ExpectGetFileInformation(basePath.AsRootedPath(), FileAttributes.Directory);
@@ -259,9 +236,8 @@ namespace DokanNet.Tests
 #else
             Assert.IsNotNull(directory, nameof(sut.CreateSubdirectory));
             Assert.AreEqual(path.AsDriveBasedPath(), directory.FullName);
-
-            fixture.Verify();
 #endif
+            Verify(fixture);
         }
 
         [TestMethod, TestCategory(TestCategories.Success)]
@@ -271,9 +247,8 @@ namespace DokanNet.Tests
 
             string basePath = fixture.DirectoryName,
                 path = Path.Combine(basePath, fixture.SubDirectoryName);
-#if LOGONLY
-            fixture.SetupAny();
-#else
+            PermitAnyIfOnlyLogging(fixture);
+#if NOTLOGONLY
             fixture.ExpectCreateFile(path.AsRootedPath(), ReadAttributesAccess, ReadWriteShare, FileMode.Open);
             fixture.ExpectGetFileInformation(path.AsRootedPath(), FileAttributes.Directory);
 #endif
@@ -287,9 +262,8 @@ namespace DokanNet.Tests
 #else
             Assert.IsNotNull(directory, nameof(sut.CreateSubdirectory));
             Assert.AreEqual(path.AsDriveBasedPath(), directory.FullName);
-
-            fixture.Verify();
 #endif
+            Verify(fixture);
         }
 
         [TestMethod, TestCategory(TestCategories.Failure)]
@@ -300,9 +274,8 @@ namespace DokanNet.Tests
 
             string basePath = fixture.DirectoryName,
                 path = Path.Combine(basePath, fixture.SubDirectoryName);
-#if LOGONLY
-            fixture.SetupAny();
-#else
+            PermitAnyIfOnlyLogging(fixture);
+#if NOTLOGONLY
             fixture.ExpectCreateFile(path.AsRootedPath(), ReadAttributesAccess, ReadWriteShare, FileMode.Open);
             fixture.ExpectGetFileInformation(path.AsRootedPath(), FileAttributes.Normal);
             fixture.ExpectCreateFile(basePath.AsRootedPath(), ReadAttributesAccess, ReadWriteShare, FileMode.Open);
@@ -320,9 +293,8 @@ namespace DokanNet.Tests
             var fixture = DokanOperationsFixture.Instance;
 
             var path = fixture.DirectoryName.AsRootedPath();
-#if LOGONLY
-            fixture.SetupAny();
-#else
+            PermitAnyIfOnlyLogging(fixture);
+#if NOTLOGONLY
             fixture.ExpectCreateFile(path, ReadAttributesAccess, ReadWriteShare, FileMode.Open);
             fixture.ExpectGetFileInformation(path, FileAttributes.Directory);
             fixture.ExpectOpenDirectory(path, DeleteFromDirectoryAccess);
@@ -333,9 +305,7 @@ namespace DokanNet.Tests
 
             sut.Delete(false);
 
-#if !LOGONLY
-            fixture.Verify();
-#endif
+            Verify(fixture);
         }
 
         [TestMethod, TestCategory(TestCategories.Success)]
@@ -350,9 +320,8 @@ namespace DokanNet.Tests
             var path = fixture.DirectoryName.AsRootedPath();
             const string subFileName = "SubFile.ext";
             var subFilePath = Path.DirectorySeparatorChar + subFileName;
-#if LOGONLY
-            fixture.SetupAny();
-#else
+            PermitAnyIfOnlyLogging(fixture);
+#if NOTLOGONLY
             fixture.ExpectCreateFile(path, ReadAttributesAccess, ReadWriteShare, FileMode.Open);
             fixture.ExpectGetFileInformation(path, FileAttributes.Directory);
             fixture.ExpectOpenDirectory(path);
@@ -392,9 +361,7 @@ namespace DokanNet.Tests
 
             sut.Delete(true);
 
-#if !LOGONLY
-            fixture.Verify();
-#endif
+            Verify(fixture);
         }
 
         [TestMethod, TestCategory(TestCategories.Success)]
@@ -407,9 +374,8 @@ namespace DokanNet.Tests
             var fixture = DokanOperationsFixture.Instance;
 
             var path = fixture.DirectoryName.AsRootedPath();
-#if LOGONLY
-            fixture.SetupAny();
-#else
+            PermitAnyIfOnlyLogging(fixture);
+#if NOTLOGONLY
             fixture.ExpectCreateFile(path, ReadAttributesAccess, ReadWriteShare, FileMode.Open);
             fixture.ExpectGetFileInformation(path, FileAttributes.Directory);
             fixture.ExpectOpenDirectory(path);
@@ -430,9 +396,7 @@ namespace DokanNet.Tests
 
             sut.Delete(true);
 
-#if !LOGONLY
-            fixture.Verify();
-#endif
+            Verify(fixture);
         }
 
         [TestMethod, TestCategory(TestCategories.Success)]
@@ -441,9 +405,8 @@ namespace DokanNet.Tests
             var fixture = DokanOperationsFixture.Instance;
 
             var path = fixture.DirectoryName;
-#if LOGONLY
-            fixture.SetupAny();
-#else
+            PermitAnyIfOnlyLogging(fixture);
+#if NOTLOGONLY
             fixture.ExpectCreateFile(path.AsRootedPath(), ReadAttributesPermissionsAccess, ReadWriteShare, FileMode.Open);
             fixture.ExpectGetFileInformation(path.AsRootedPath(), FileAttributes.Directory);
             fixture.ExpectGetFileSecurity(path.AsRootedPath(), DokanOperationsFixture.DefaultDirectorySecurity);
@@ -460,8 +423,8 @@ namespace DokanNet.Tests
 #if !LOGONLY
             Assert.IsNotNull(security, "Security descriptor should be set");
             Assert.AreEqual(DokanOperationsFixture.DefaultDirectorySecurity.AsString(), security.AsString(), "Security descriptors should match");
-            fixture.Verify();
 #endif
+            Verify(fixture);
         }
 
         private static void GetDirectories_OnRootDirectory_CallsApiCorrectly(bool supportsPatternSearch)
@@ -469,9 +432,8 @@ namespace DokanNet.Tests
             var fixture = DokanOperationsFixture.Instance;
 
             var path = DokanOperationsFixture.RootName;
-#if LOGONLY
-            fixture.SetupAny();
-#else
+            PermitAnyIfOnlyLogging(fixture);
+#if NOTLOGONLY
             fixture.ExpectOpenDirectory(path);
             if (supportsPatternSearch)
             {
@@ -497,9 +459,8 @@ namespace DokanNet.Tests
                     .ToArray(),
                 sut.GetDirectories().Select(d => d.Name).ToArray(),
                 nameof(sut.GetDirectories));
-
-            fixture.Verify();
 #endif
+            Verify(fixture);
         }
 
         [TestMethod, TestCategory(TestCategories.Success)]
@@ -525,9 +486,8 @@ namespace DokanNet.Tests
             var fixture = DokanOperationsFixture.Instance;
 
             var path = fixture.DirectoryName.AsRootedPath();
-#if LOGONLY
-            fixture.SetupAny();
-#else
+            PermitAnyIfOnlyLogging(fixture);
+#if NOTLOGONLY
             fixture.ExpectOpenDirectory(path);
             if (supportsPatternSearch)
             {
@@ -552,9 +512,8 @@ namespace DokanNet.Tests
                     .ToArray(),
                 sut.GetDirectories().Select(d => d.Name).ToArray(),
                 nameof(sut.GetDirectories));
-
-            fixture.Verify();
 #endif
+            Verify(fixture);
         }
 
         [TestMethod, TestCategory(TestCategories.Success)]
@@ -569,9 +528,8 @@ namespace DokanNet.Tests
             var path = DokanOperationsFixture.RootName;
             const string filter = "*r2";
             var regex = new Regex(filter.Replace('?', '.').Replace("*", ".*"));
-#if LOGONLY
-            fixture.SetupAny();
-#else
+            PermitAnyIfOnlyLogging(fixture);
+#if NOTLOGONLY
             fixture.ExpectOpenDirectory(path);
             if (supportsPatternSearch)
             {
@@ -599,9 +557,8 @@ namespace DokanNet.Tests
                     .ToArray(),
                 sut.GetDirectories(filter).Select(d => d.Name).ToArray(),
                 nameof(sut.GetDirectories));
-
-            fixture.Verify();
 #endif
+            Verify(fixture);
         }
 
         [TestMethod, TestCategory(TestCategories.Success)]
@@ -614,9 +571,8 @@ namespace DokanNet.Tests
             var fixture = DokanOperationsFixture.Instance;
 
             var path = DokanOperationsFixture.RootName;
-#if LOGONLY
-            fixture.SetupAny();
-#else
+            PermitAnyIfOnlyLogging(fixture);
+#if NOTLOGONLY
             fixture.ExpectOpenDirectory(path);
             if (supportsPatternSearch)
             {
@@ -641,9 +597,8 @@ namespace DokanNet.Tests
                     .ToArray(),
                 sut.GetFiles().Select(f => f.Name).ToArray(),
                 nameof(sut.GetFiles));
-
-            fixture.Verify();
 #endif
+            Verify(fixture);
         }
 
         [SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", MessageId = "SubDirectory")]
@@ -657,9 +612,8 @@ namespace DokanNet.Tests
             var fixture = DokanOperationsFixture.Instance;
 
             var path = fixture.DirectoryName.AsRootedPath();
-#if LOGONLY
-            fixture.SetupAny();
-#else
+            PermitAnyIfOnlyLogging(fixture);
+#if NOTLOGONLY
             fixture.ExpectOpenDirectory(path);
             if (supportsPatternSearch)
             {
@@ -684,9 +638,8 @@ namespace DokanNet.Tests
                     .ToArray(),
                 sut.GetFiles().Select(f => f.Name).ToArray(),
                 nameof(sut.GetFiles));
-
-            fixture.Verify();
 #endif
+            Verify(fixture);
         }
 
         [TestMethod, TestCategory(TestCategories.Success)]
@@ -701,9 +654,8 @@ namespace DokanNet.Tests
             var path = DokanOperationsFixture.RootName;
             const string filter = "*bD*";
             var regex = new Regex(filter.Replace('?', '.').Replace("*", ".*"));
-#if LOGONLY
-            fixture.SetupAny();
-#else
+            PermitAnyIfOnlyLogging(fixture);
+#if NOTLOGONLY
             fixture.ExpectOpenDirectory(path);
             if (supportsPatternSearch)
             {
@@ -730,9 +682,8 @@ namespace DokanNet.Tests
                     .ToArray(),
                 sut.GetFiles(filter).Select(f => f.Name).ToArray(),
                 nameof(sut.GetFiles));
-
-            fixture.Verify();
 #endif
+            Verify(fixture);
         }
 
         [SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", MessageId = "SubDirectory")]
@@ -746,9 +697,8 @@ namespace DokanNet.Tests
             var fixture = DokanOperationsFixture.Instance;
 
             var path = fixture.DirectoryName.AsRootedPath();
-#if LOGONLY
-            fixture.SetupAny();
-#else
+            PermitAnyIfOnlyLogging(fixture);
+#if NOTLOGONLY
             fixture.ExpectOpenDirectory(path);
             //Remove all dates
             var files = DokanOperationsFixture.RemoveDatesFromFileInformations(fixture.DirectoryItems);
@@ -794,9 +744,8 @@ namespace DokanNet.Tests
                 expectedDateCollection,
                 receivedFiles.Select(x => x.LastAccessTime).ToArray(),
                 nameof(FileInformation.LastAccessTime));
-
-            fixture.Verify();
 #endif
+            Verify(fixture);
         }
 
         [TestMethod, TestCategory(TestCategories.Success)]
@@ -809,9 +758,8 @@ namespace DokanNet.Tests
             var fixture = DokanOperationsFixture.Instance;
 
             var path = DokanOperationsFixture.RootName;
-#if LOGONLY
-            fixture.SetupAny();
-#else
+            PermitAnyIfOnlyLogging(fixture);
+#if NOTLOGONLY
             fixture.ExpectOpenDirectory(path);
             if (supportsPatternSearch)
             {
@@ -834,9 +782,8 @@ namespace DokanNet.Tests
                 fixture.RootDirectoryItems.Select(i => i.FileName).ToArray(),
                 sut.GetFileSystemInfos().Select(f => f.Name).ToArray(),
                 nameof(sut.GetFileSystemInfos));
-
-            fixture.Verify();
 #endif
+            Verify(fixture);
         }
 
         [SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", MessageId = "SubDirectory")]
@@ -850,9 +797,8 @@ namespace DokanNet.Tests
             var fixture = DokanOperationsFixture.Instance;
 
             var path = fixture.DirectoryName.AsRootedPath();
-#if LOGONLY
-            fixture.SetupAny();
-#else
+            PermitAnyIfOnlyLogging(fixture);
+#if NOTLOGONLY
             fixture.ExpectOpenDirectory(path);
             if (supportsPatternSearch)
             {
@@ -875,9 +821,8 @@ namespace DokanNet.Tests
                 fixture.DirectoryItems.Select(i => i.FileName).ToArray(),
                 sut.GetFileSystemInfos().Select(f => f.Name).ToArray(),
                 nameof(sut.GetFileSystemInfos));
-
-            fixture.Verify();
 #endif
+            Verify(fixture);
         }
 
         [TestMethod, TestCategory(TestCategories.Success)]
@@ -892,9 +837,8 @@ namespace DokanNet.Tests
             var path = DokanOperationsFixture.RootName;
             const string filter = "*bD*";
             var regex = new Regex(filter.Replace('?', '.').Replace("*", ".*"));
-#if LOGONLY
-            fixture.SetupAny();
-#else
+            PermitAnyIfOnlyLogging(fixture);
+#if NOTLOGONLY
             fixture.ExpectOpenDirectory(path);
             if (supportsPatternSearch)
             {
@@ -920,9 +864,8 @@ namespace DokanNet.Tests
                     .ToArray(),
                 sut.GetFileSystemInfos(filter).Select(f => f.Name).ToArray(),
                 nameof(sut.GetFileSystemInfos));
-
-            fixture.Verify();
 #endif
+            Verify(fixture);
         }
 
         [TestMethod, TestCategory(TestCategories.Success)]
@@ -942,9 +885,8 @@ namespace DokanNet.Tests
                 new { Path = fixture.Directory2Name.AsRootedPath(), Items = DokanOperationsFixture.GetEmptyDirectoryDefaultFiles().Concat(fixture.Directory2Items).ToArray() },
                 new { Path = Path.Combine(fixture.Directory2Name, fixture.SubDirectory2Name).AsRootedPath(), Items = DokanOperationsFixture.GetEmptyDirectoryDefaultFiles().ToArray() }
             };
-#if LOGONLY
-            fixture.SetupAny();
-#else
+            PermitAnyIfOnlyLogging(fixture);
+#if NOTLOGONLY
             foreach (var pathAndItem in pathsAndItems)
             {
                 fixture.ExpectOpenDirectory(pathAndItem.Path);
@@ -973,9 +915,8 @@ namespace DokanNet.Tests
                     .ToArray(),
                 sut.GetFileSystemInfos("*", SearchOption.AllDirectories).Select(f => f.Name).ToArray(),
                 nameof(sut.GetFileSystemInfos));
-
-            fixture.Verify();
 #endif
+            Verify(fixture);
         }
 
         [SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", MessageId = "ParentIs")]
@@ -986,9 +927,8 @@ namespace DokanNet.Tests
 
             string path = fixture.DirectoryName.AsRootedPath(),
                 destinationPath = fixture.DestinationDirectoryName.AsRootedPath();
-#if LOGONLY
-            fixture.SetupAny();
-#else
+            PermitAnyIfOnlyLogging(fixture);
+#if NOTLOGONLY
             fixture.ExpectCreateFileWithoutCleanup(path, MoveFromAccess, ReadWriteShare, FileMode.Open, FileOptions.None);
             fixture.ExpectGetFileInformation(path, FileAttributes.Directory);
             fixture.ExpectCreateFile(destinationPath, AppendToDirectoryAccess, FileShare.ReadWrite, FileMode.Open);
@@ -1002,9 +942,7 @@ namespace DokanNet.Tests
 
             sut.MoveTo(fixture.DestinationDirectoryName.AsDriveBasedPath());
 
-#if !LOGONLY
-            fixture.Verify();
-#endif
+            Verify(fixture);
         }
 
         [SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", MessageId = "ParentIs")]
@@ -1017,9 +955,8 @@ namespace DokanNet.Tests
                 destination = Path.Combine(fixture.DestinationDirectoryName, fixture.DestinationSubDirectoryName),
                 path = origin.AsRootedPath(),
                 destinationPath = destination.AsRootedPath();
-#if LOGONLY
-            fixture.SetupAny();
-#else
+            PermitAnyIfOnlyLogging(fixture);
+#if NOTLOGONLY
             fixture.ExpectCreateFileWithoutCleanup(path, MoveFromAccess, ReadWriteShare, FileMode.Open, FileOptions.None);
             fixture.ExpectGetFileInformation(path, FileAttributes.Directory);
             fixture.ExpectOpenDirectoryWithoutCleanup(fixture.DestinationDirectoryName.AsRootedPath(), AppendToDirectoryAccess, FileShare.ReadWrite);
@@ -1033,9 +970,7 @@ namespace DokanNet.Tests
 
             sut.MoveTo(destination.AsDriveBasedPath());
 
-#if !LOGONLY
-            fixture.Verify();
-#endif
+            Verify(fixture);
         }
 
         [TestMethod, TestCategory(TestCategories.Failure)]
@@ -1045,9 +980,8 @@ namespace DokanNet.Tests
             var fixture = DokanOperationsFixture.Instance;
 
             var path = fixture.DirectoryName.AsRootedPath();
-#if LOGONLY
-            fixture.SetupAny();
-#else
+            PermitAnyIfOnlyLogging(fixture);
+#if NOTLOGONLY
             fixture.ExpectCreateFileToFail(path, DokanResult.PathNotFound);
 #endif
 
@@ -1064,9 +998,8 @@ namespace DokanNet.Tests
 
             string path = fixture.DirectoryName.AsRootedPath(),
                 destinationPath = fixture.DestinationDirectoryName.AsRootedPath();
-#if LOGONLY
-                fixture.SetupAny();
-#else
+            PermitAnyIfOnlyLogging(fixture);
+#if NOTLOGONLY
             fixture.ExpectCreateFile(path, MoveFromAccess, ReadWriteShare, FileMode.Open);
             fixture.ExpectGetFileInformation(path, FileAttributes.Directory);
             fixture.ExpectCreateFileToFail(destinationPath, DokanResult.FileExists);
@@ -1080,9 +1013,7 @@ namespace DokanNet.Tests
 
             sut.MoveTo(fixture.DestinationDirectoryName.AsDriveBasedPath());
 
-#if !LOGONLY
-            fixture.Verify();
-#endif
+            Verify(fixture);
         }
 
         [TestMethod, TestCategory(TestCategories.Success)]
@@ -1099,9 +1030,8 @@ namespace DokanNet.Tests
             security.AddAccessRule(new FileSystemAccessRule(new SecurityIdentifier(WellKnownSidType.BuiltinUsersSid, null),
                 FileSystemRights.FullControl, InheritanceFlags.ContainerInherit | InheritanceFlags.ObjectInherit,
                 PropagationFlags.NoPropagateInherit, AccessControlType.Allow));
-#if LOGONLY
-            fixture.SetupAny();
-#else
+            PermitAnyIfOnlyLogging(fixture);
+#if NOTLOGONLY
             fixture.ExpectCreateFile(path.AsRootedPath(), ChangePermissionsAccess, ReadWriteShare, FileMode.Open);
             fixture.ExpectGetFileInformation(path.AsRootedPath(), FileAttributes.Directory);
             fixture.ExpectGetFileSecurity(path.AsRootedPath(), DokanOperationsFixture.DefaultDirectorySecurity);
@@ -1124,9 +1054,19 @@ namespace DokanNet.Tests
             var sut = new DirectoryInfo(path.AsDriveBasedPath());
             sut.SetAccessControl(security);
 
-#if !LOGONLY
+            Verify(fixture);
+        }
+
+        [Conditional("LOGONLY")]
+        private static void PermitAnyIfOnlyLogging(DokanOperationsFixture fixture)
+        {
+            fixture.PermitAny();
+        }
+
+        [Conditional("NOTLOGONLY")]
+        private static void Verify(DokanOperationsFixture fixture)
+        {
             fixture.Verify();
-#endif
         }
     }
 }

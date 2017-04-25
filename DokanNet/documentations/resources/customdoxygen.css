@@ -11,7 +11,7 @@ margin-left: 30px !important;
 font-size: 1.15em !important;
 }
 .navbar{
- border: 0px solid #222 !important;
+ border: 0 solid #222 !important;
 }
 table{
     white-space:pre-wrap !important;
@@ -42,7 +42,7 @@ body {
 /* Set the fixed height of the footer here */
 #footer {
     font-size: 0.9em;
-    padding: 8px 0px;
+    padding: 8px 0;
     background-color: #f5f5f5;
 }
 
@@ -160,8 +160,8 @@ div.line {
     word-wrap: normal;      /* IE 5.5+ */
     text-indent: -53px;
     padding-left: 53px;
-    padding-bottom: 0px;
-    margin: 0px;
+    padding-bottom: 0;
+    margin: 0;
     -webkit-transition-property: background-color, box-shadow;
     -webkit-transition-duration: 0.5s;
     -moz-transition-property: background-color, box-shadow;
@@ -270,12 +270,12 @@ blockquote {
 /*---------------- Search Box */
 
 #search-box {
-  margin: 10px 0px;
+  margin: 10px 0;
 }
 #search-box .close {
   display: none;
   position: absolute;
-  right: 0px;
+  right: 0;
   padding: 6px 12px;
   z-index: 5;
 }
@@ -320,11 +320,11 @@ span.SRScope {
   height: 16px;
 }
 .directory .icondoc {
-  background-position: 0px 0px;
+  background-position: 0 0;
   height: 20px;
 }
 .directory .iconfopen {
-  background-position: 0px 0px;
+  background-position: 0 0;
 }
 .directory td.entry {
   padding: 7px 8px 6px 8px;
@@ -356,7 +356,7 @@ span.SRScope {
   margin-top: 25px;
 }
 .page-header {
-  margin: 20px 0px !important;
+  margin: 20px 0 !important;
 }
 .page-header .title {
   display: inline-block;

@@ -277,7 +277,7 @@ namespace DokanNet.Tests
 
             var path = fixture.FileName.AsRootedPath();
 #if LOGONLY
-            fixture.SetupAny();
+            fixture.PermitAny();
 #else
             fixture.ExpectCreateFile(path, ReadAccess, ReadShare, FileMode.Open, context: testData);
             fixture.ExpectReadFileInChunks(path, testData, (int) FILE_BUFFER_SIZE, context: testData, synchronousIo: false);
@@ -304,7 +304,7 @@ namespace DokanNet.Tests
 
             var path = fixture.FileName.AsRootedPath();
 #if LOGONLY
-            fixture.SetupAny();
+            fixture.PermitAny();
 #else
             fixture.ExpectCreateFile(path, WriteAccess, WriteShare, FileMode.Open, context: testData);
             fixture.ExpectSetAllocationSize(path, testData.Length);
@@ -342,7 +342,7 @@ namespace DokanNet.Tests
             var path = fixture.FileName.AsRootedPath();
             var testData = DokanOperationsFixture.InitBlockTestData(bufferSize, fileSize);
 #if LOGONLY
-            fixture.SetupAny();
+            fixture.PermitAny();
 #else
             fixture.ExpectCreateFile(path, ReadAccess, ReadShare, FileMode.Open, context: testData);
             fixture.ExpectReadFileInChunks(path, testData, bufferSize, context: testData, synchronousIo: false);
@@ -375,7 +375,7 @@ namespace DokanNet.Tests
             var path = fixture.FileName.AsRootedPath();
             var testData = DokanOperationsFixture.InitBlockTestData(bufferSize, fileSize);
 #if LOGONLY
-            fixture.SetupAny();
+            fixture.PermitAny();
 #else
             fixture.ExpectCreateFile(path, WriteAccess, WriteShare, FileMode.Open, context: testData);
             fixture.ExpectSetAllocationSize(path, testData.Length);

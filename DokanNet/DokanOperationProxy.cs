@@ -248,8 +248,8 @@ namespace DokanNet
         /// </param>
         public DokanOperationProxy(IDokanOperations operations, ILogger logger)
         {
-            this._operations = operations;
-            this._logger = logger;
+            _operations = operations;
+            _logger = logger;
             _serialNumber = (uint)operations.GetHashCode();
         }
 
@@ -537,7 +537,7 @@ namespace DokanNet
 
                     var fill = GetDataFromPointer<FILL_FIND_FILE_DATA>(rawFillFindData);
 
-                    // used a single entry call to speed up the "enumeration" of the list
+                    // TODO:used a single entry call to speed up the "enumeration" of the list
                     foreach (var t in files)
                     {
                         AddTo(fill, rawFileInfo, t);
@@ -585,7 +585,7 @@ namespace DokanNet
 
                     var fill = GetDataFromPointer<FILL_FIND_FILE_DATA>(rawFillFindData);
 
-                    // used a single entry call to speed up the "enumeration" of the list
+                    // TODO: used a single entry call to speed up the "enumeration" of the list
                     foreach (var t in files)
                     {
                         AddTo(fill, rawFileInfo, t);
@@ -644,10 +644,10 @@ namespace DokanNet
 
                     var fill = GetDataFromPointer<FILL_FIND_STREAM_DATA>(rawFillFindData);
 
-                    // used a single entry call to speed up the "enumeration" of the list
+                    // TODO: used a single entry call to speed up the "enumeration" of the list
                     foreach (var t in files)
                     {
-                        AddTo(fill, rawFileInfo, t);
+                        AddTo(fill, t);
                     }
                 }
 
@@ -659,27 +659,29 @@ namespace DokanNet
                 _logger.Error("FindStreamsProxy : {0} Throw : {1}", rawFileName, ex.Message);
                 return DokanResult.InvalidParameter;
             }
+
+            
+            void AddTo(FILL_FIND_STREAM_DATA fill, FileInformation fi)
+            {
+                Debug.Assert(!string.IsNullOrEmpty(fi.FileName), "FileName must not be empty or null");
+                var data = new WIN32_FIND_STREAM_DATA
+                {
+                    StreamSize = fi.Length,
+                    cStreamName = fi.FileName
+                };
+                //ZeroMemory(&data, sizeof(WIN32_FIND_DATAW));
+
+                fill(ref data, rawFileInfo);
+            }
         }
 
-        private static T GetDataFromPointer<T>(IntPtr rawDelegate) where T: class 
+        private static T GetDataFromPointer<T>(IntPtr pointer) where T: class 
         {
 #if NET451_OR_GREATER
-            return Marshal.GetDelegateForFunctionPointer<T>(rawDelegate);
+            return Marshal.GetDelegateForFunctionPointer<T>(pointer);
 #else
-            return Marshal.GetDelegateForFunctionPointer(rawDelegate, typeof(T)) as T;
+            return Marshal.GetDelegateForFunctionPointer(pointer, typeof(T)) as T;
 #endif
-        }
-        private static void AddTo(FILL_FIND_STREAM_DATA fill, DokanFileInfo rawFileInfo, FileInformation fi)
-        {
-            Debug.Assert(!string.IsNullOrEmpty(fi.FileName), "FileName must not be empty or null");
-            var data = new WIN32_FIND_STREAM_DATA
-            {
-                StreamSize = fi.Length,
-                StreamName = fi.FileName
-            };
-            //ZeroMemory(&data, sizeof(WIN32_FIND_DATAW));
-
-            fill(ref data, rawFileInfo);
         }
 
         ////
