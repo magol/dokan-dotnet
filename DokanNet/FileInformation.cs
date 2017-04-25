@@ -14,7 +14,7 @@ namespace DokanNet
     /// </summary>
     [StructLayout(LayoutKind.Auto)]
     [DebuggerDisplay("{FileName}, {Length}, {CreationTime}, {LastWriteTime}, {LastAccessTime}, {Attributes}")]
-    public struct FileInformation
+    public struct FileInformation : IEquatable<FileInformation>
     {
         /// <summary>
         /// Gets or sets the name of the file or directory.
@@ -80,7 +80,7 @@ namespace DokanNet
         {
             unchecked
             {
-                var hashCode = FileName != null ? FileName.GetHashCode() : 0;
+                var hashCode = (FileName != null ? FileName.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (int) Attributes;
                 hashCode = (hashCode * 397) ^ CreationTime.GetHashCode();
                 hashCode = (hashCode * 397) ^ LastAccessTime.GetHashCode();

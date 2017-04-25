@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Dictionary xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- Reference, see https://msdn.microsoft.com/en-us/library/bb514188.aspx -->
+  <Words>
+    <!--To exclude a term from the list of terms that code analysis identifies as correctly spelled. -->
+    <Unrecognized>
+      <!--<Word></Word>-->
+    </Unrecognized>
+    <!--Terms that code analysis identifies as correctly spelled.
+        Elements are not case-sensitive. -->
+    <Recognized>
+      <Word>Dokan</Word>
+      <!--Cannot is recomendated-->
+      <Word>Cant</Word>
+      <!--Canceled is recomended-->
+      <Word>Cancelled</Word>
+    </Recognized>
+    <!--Terms that code analysis identifies as deprecated.
+        * The term are not case-sensitive.
+        * The PreferredAlternate attribute value is case-sensitive. Use Pascal case for compound alternates-->
+    <Deprecated>
+      <!--<Term PreferredAlternate=""></Term>-->
+    </Deprecated>
+    <!--For terms that code analysis identifies as a compound word, specify the correct casing of the term.
+        * The term are not case-sensitive.
+        * The PreferredAlternate attribute value is case-sensitive. Use Pascal case for compound alternates-->
+    <Compound>
+      <!--<Term CompoundAlternate=""></Term>-->
+    </Compound>
+    <!--To exclude a term in the list of terms that code analysis identifies as a single, discrete word when the term is checked by the casing rules for compound words. -->
+    <DiscreteExceptions>
+      <Term></Term>
+    </DiscreteExceptions>
+  </Words>
+  <Acronyms>
+    <!--To include an acronym in the list of terms that code analysis identifies as correctly spelled.
+        * The term are case-sensitive.-->
+    <CasingExceptions>
+      <Acronym>Ea</Acronym>  <!--Extended Attribut-->
+      <Acronym>IDs</Acronym> <!--Identifications-->
+      <Acronym>Io</Acronym>  <!--In/Out-->
+      <Acronym>Le</Acronym>  <!--Used in STATUS_INVALID_IMAGE_LE_FORMAT-->
+      <Acronym>Mz</Acronym>  <!--Used in STATUS_INVALID_IMAGE_NOT_MZ-->
+      <Acronym>Nt</Acronym>  <!--Windows platform (New Technolog)-->
+      <Acronym>Pc</Acronym>  <!--Used in BAD_INITIAL_PC-->
+      <Acronym>Rm</Acronym>  <!--Resource Manager-->
+      <Acronym>Rx</Acronym>  <!--Used in RX_ACT_COMMITTED-->
+      <Acronym>Tm</Acronym>  <!--Transaction Manager-->
+      <Acronym>Vm</Acronym>  <!--Virtual Memory-->
+      <Acronym>UNC</Acronym>
+    </CasingExceptions>
+  </Acronyms>
+</Dictionary>

@@ -1,10 +1,9 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using System.Security.Principal;
 using DokanNet.Native;
 using static DokanNet.FormatProviders;
-
-#pragma warning disable 649,169
 
 namespace DokanNet
 {
@@ -130,6 +129,8 @@ namespace DokanNet
         /// </summary>
         /// <returns>An <c><see cref="WindowsIdentity"/></c> with the access token, 
         /// -or- <c>null</c> if the operation was not successful.</returns>
+        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Explicit Exception handler")]
+        [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate",   Justification = "Should not be a property")]
         public WindowsIdentity GetRequestor()
         {
             try
@@ -233,5 +234,3 @@ namespace DokanNet
         }
     }
 }
-
-#pragma warning restore 649, 169

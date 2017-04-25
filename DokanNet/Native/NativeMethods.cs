@@ -22,7 +22,7 @@ namespace DokanNet.Native
         /// <param name="operations">Instance of <see cref="DOKAN_OPERATIONS"/> that will be called for each request made by the kernel.</param>
         /// <returns>\ref DokanMain status.</returns>
         [DllImport(DOKAN_DLL, ExactSpelling = true)]
-        public static extern int DokanMain(ref DOKAN_OPTIONS options, ref DOKAN_OPERATIONS operations);
+        internal static extern int DokanMain(ref DOKAN_OPTIONS options, ref DOKAN_OPERATIONS operations);
 
         /// <summary>
         /// Unmount a dokan device from a driver letter.
@@ -31,7 +31,7 @@ namespace DokanNet.Native
         /// <returns><c>True</c> if device was unmount or <c>false</c> in case of failure or device not found.</returns>
         [DllImport(DOKAN_DLL, ExactSpelling = true, CharSet = CharSet.Unicode)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool DokanUnmount(char driveLetter);
+        internal static extern bool DokanUnmount(char driveLetter);
 
         /// <summary>
         /// Get the version of Dokan.
@@ -39,7 +39,7 @@ namespace DokanNet.Native
         /// </summary>
         /// <returns>The version of Dokan</returns>
         [DllImport(DOKAN_DLL, ExactSpelling = true)]
-        public static extern uint DokanVersion();
+        internal static extern uint DokanVersion();
 
         /// <summary>
         /// Get the version of the Dokan driver.
@@ -47,7 +47,7 @@ namespace DokanNet.Native
         /// </summary>
         /// <returns>The version of Dokan driver.</returns>
         [DllImport(DOKAN_DLL, ExactSpelling = true)]
-        public static extern uint DokanDriverVersion();
+        internal static extern uint DokanDriverVersion();
 
         /// <summary>
         /// Unmount a dokan device from a mount point
@@ -57,7 +57,7 @@ namespace DokanNet.Native
         /// <returns><c>True</c> if device was unmount or <c>false</c> in case of failure or device not found.</returns>
         [DllImport(DOKAN_DLL, ExactSpelling = true, CharSet = CharSet.Unicode)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool DokanRemoveMountPoint([MarshalAs(UnmanagedType.LPWStr)] string mountPoint);
+        internal static extern bool DokanRemoveMountPoint([MarshalAs(UnmanagedType.LPWStr)] string mountPoint);
 
         /// <summary>
         /// Extends the time out of the current IO operation in driver.
@@ -67,7 +67,7 @@ namespace DokanNet.Native
         /// <returns>If the operation was successful.</returns>
         [DllImport(DOKAN_DLL, ExactSpelling = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool DokanResetTimeout(uint timeout, DokanFileInfo rawFileInfo);
+        internal static extern bool DokanResetTimeout(uint timeout, DokanFileInfo rawFileInfo);
 
         /// <summary>
         /// Get the handle to Access Token.
@@ -81,7 +81,7 @@ namespace DokanNet.Native
         /// A handle to the account token for the user on whose behalf the code is running.
         /// </returns>
         [DllImport(DOKAN_DLL, ExactSpelling = true)]
-        public static extern IntPtr DokanOpenRequestorToken(DokanFileInfo rawFileInfo);
+        internal static extern IntPtr DokanOpenRequestorToken(DokanFileInfo rawFileInfo);
 
         /// <summary>
         /// Convert <see cref="DokanOperationProxy.ZwCreateFileDelegate"/> parameters to <see cref="IDokanOperations.CreateFile"/> parameters.
@@ -93,7 +93,7 @@ namespace DokanNet.Native
         /// <param name="outCreationDisposition">New <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa363858(v=vs.85).aspx">CreateFile (MSDN)</a> dwCreationDisposition.</param>
         /// \see <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa363858(v=vs.85).aspx">CreateFile function (MSDN)</a>
         [DllImport(DOKAN_DLL, ExactSpelling = true)]
-        public static extern void DokanMapKernelToUserCreateFileFlags(
+        internal static extern void DokanMapKernelToUserCreateFileFlags(
             uint fileAttributes,
             uint createOptions,
             uint createDisposition,

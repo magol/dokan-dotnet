@@ -1,6 +1,9 @@
 /// <summary>
 /// Namespace for interface and classes related to logging.
 /// </summary>
+
+using System.Diagnostics.CodeAnalysis;
+
 namespace DokanNet.Logging
 {
    /// <summary>
@@ -29,12 +32,13 @@ namespace DokanNet.Logging
        /// <param name="args">Arguments to use to format the <paramref name="message"/></param>
        void Warn(string message, params object[] args);
 
-       /// <summary>
-       /// Log a error message
-       /// </summary>
-       /// <param name="message">The message to write to the log</param>
-       /// <param name="args">Arguments to use to format the <paramref name="message"/></param>
-       void Error(string message, params object[] args);
+        /// <summary>
+        /// Log a error message
+        /// </summary>
+        /// <param name="message">The message to write to the log</param>
+        /// <param name="args">Arguments to use to format the <paramref name="message"/></param>
+        [SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", Justification = "No conflict with reserved keyword")]
+        void Error(string message, params object[] args);
 
        /// <summary>
        /// Log a fatal error message

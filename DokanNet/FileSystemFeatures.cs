@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace DokanNet
 {
@@ -7,9 +8,8 @@ namespace DokanNet
     /// </summary>
     /// \see <a href="https://msdn.microsoft.com/en-us/library/cc246323.aspx">File System Attribute Extensions (MSDN)</a>
     [Flags]
-#pragma warning disable 3009
+    [SuppressMessage("Microsoft.Design", "CA1028:EnumStorageShouldBeInt32", Justification = "Specified by API")]
     public enum FileSystemFeatures : uint
-#pragma warning restore 3009
     {
         /// <summary>
         /// No features defined.

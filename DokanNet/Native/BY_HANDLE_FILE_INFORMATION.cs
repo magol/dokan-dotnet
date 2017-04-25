@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Runtime.InteropServices;
 using FILETIME = System.Runtime.InteropServices.ComTypes.FILETIME;
 
 namespace DokanNet.Native
@@ -30,16 +31,43 @@ namespace DokanNet.Native
     [StructLayout(LayoutKind.Sequential, Pack = 4)]
     internal struct BY_HANDLE_FILE_INFORMATION
     {
+        private uint dwFileAttributes;
+        private FILETIME ftCreationTime;
+        private FILETIME ftLastAccessTime;
+        private FILETIME ftLastWriteTime;
+        private uint dwVolumeSerialNumber;
+        /// <summary>
+        /// The high-order part of the file size.
+        /// </summary>
+        private uint nFileSizeHigh;
+        /// <summary>
+        /// The low-order part of the file size.
+        /// </summary>
+        private uint nFileSizeLow;
+        private uint dwNumberOfLinks;
+        private uint nFileIndexHigh;
+        private uint nFileIndexLow;
+
         /// <summary>
         /// The file attributes. For possible values and their descriptions.
         /// </summary>
-        public uint dwFileAttributes;
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        public uint FileAttributes
+        {
+            get => dwFileAttributes;
+            set => dwFileAttributes = value;
+        }
 
         /// <summary>
         /// A <see cref="FILETIME"/> structure that specifies when a file or directory is created. 
         /// If the underlying file system does not support creation time, this member is zero (0).
         /// </summary>
-        public FILETIME ftCreationTime;
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        public FILETIME CreationTime
+        {
+            get => ftCreationTime;
+            set => ftCreationTime = value;
+        }
 
         /// <summary>
         ///  A <see cref="FILETIME"/> structure.
@@ -48,7 +76,12 @@ namespace DokanNet.Native
         /// For both files and directories, the specified date is correct, but the time of day is always set to midnight.
         /// If the underlying file system does not support the last access time, this member is zero (0).
         /// </summary>
-        public FILETIME ftLastAccessTime;
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        public FILETIME LastAccessTime
+        {
+            get => ftLastAccessTime;
+            set => ftLastAccessTime = value;
+        }
 
         /// <summary>
         /// A <see cref="FILETIME"/> structure. 
@@ -56,35 +89,56 @@ namespace DokanNet.Native
         /// For a directory, the structure specifies when the directory is created. 
         /// If the underlying file system does not support the last write time, this member is zero (0).
         /// </summary>
-        public FILETIME ftLastWriteTime;
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        public FILETIME LastWriteTime
+        {
+            get => ftLastWriteTime;
+            set => ftLastWriteTime = value;
+        }
 
         /// <summary>
         /// The serial number of the volume that contains a file.
         /// </summary>
-        internal uint dwVolumeSerialNumber;
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        internal uint VolumeSerialNumber
+        {
+            get => dwVolumeSerialNumber;
+            set => dwVolumeSerialNumber = value;
+        }
 
         /// <summary>
-        /// The high-order part of the file size.
+        /// The file size in bytes.
         /// </summary>
-        public uint nFileSizeHigh;
-
-        /// <summary>
-        /// The low-order part of the file size.
-        /// </summary>
-        public uint nFileSizeLow;
-
+        public long FileSize
+        {
+            set
+            {
+                nFileSizeLow = (uint) (value & 0xffffffff);
+                nFileSizeHigh = (uint) (value >> 32);
+            }
+        }
         /// <summary>
         /// The number of links to this file. 
         /// For the FAT file system this member is always 1. 
         /// For the NTFS file system, it can be more than 1.
         /// </summary>
-        internal uint dwNumberOfLinks;
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        internal uint NumberOfLinks
+        {
+            get => dwNumberOfLinks;
+            set => dwNumberOfLinks = value;
+        }
 
         /// <summary>
         /// The high-order part of a unique identifier that is associated with a file. 
         /// For more information, see <see cref="nFileIndexLow"/>.
         /// </summary>
-        internal uint nFileIndexHigh;
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        internal uint FileIndexHigh
+        {
+            get => nFileIndexHigh;
+            set => nFileIndexHigh = value;
+        }
 
         /// <summary>
         /// The low-order part of a unique identifier that is associated with a file.
@@ -100,6 +154,13 @@ namespace DokanNet.Native
         /// the FILE_ID_INFO structure. The 64-bit identifier in this structure is not 
         /// guaranteed to be unique on ReFS.
         /// </summary>
-        internal uint nFileIndexLow;
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        internal uint FileIndexLow
+        {
+            get => nFileIndexLow;
+            set => nFileIndexLow = value;
+        }
+
+        
     }
 }

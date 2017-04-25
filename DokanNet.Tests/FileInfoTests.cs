@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Security.AccessControl;
@@ -634,8 +635,8 @@ namespace DokanNet.Tests
             sut.MoveTo(fixture.DestinationFileName.AsDriveBasedPath());
         }
 
-        [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
-        private void OpenFile_InSpecifiedMode(FileInfo info, FileMode mode, System.IO.FileAccess[] accessModes)
+        //[SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
+        private void OpenFile_InSpecifiedMode(FileInfo info, FileMode mode, IEnumerable<System.IO.FileAccess> accessModes)
         {
             foreach (var access in accessModes)
             {

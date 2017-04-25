@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace DokanNet
 {
     /// <summary>
     /// The dokan exception.
     /// </summary>
+    [SuppressMessage("Microsoft.Usage", "CA2222:DoNotDecreaseInheritedMemberVisibility", Justification = "Can only be created internal")]
+    [SuppressMessage("Microsoft.Design", "CA1032:ImplementStandardExceptionConstructors", Justification = "Standard constructors is not needed")]
     [Serializable]
     public class DokanException : Exception
     {

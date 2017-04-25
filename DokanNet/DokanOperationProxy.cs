@@ -9,6 +9,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
 using System.IO;
 using System.Linq;
@@ -180,11 +181,11 @@ namespace DokanNet
 
         #endregion Delegates
 
-        private readonly IDokanOperations operations;
+        private readonly IDokanOperations _operations;
 
-        private readonly ILogger logger;
+        private readonly ILogger _logger;
 
-        private readonly uint serialNumber;
+        private readonly uint _serialNumber;
 
         #region Enum masks
         /// <summary>
@@ -247,10 +248,12 @@ namespace DokanNet
         /// </param>
         public DokanOperationProxy(IDokanOperations operations, ILogger logger)
         {
-            this.operations = operations;
-            this.logger = logger;
-            serialNumber = (uint)operations.GetHashCode();
+            this._operations = operations;
+            this._logger = logger;
+            _serialNumber = (uint)operations.GetHashCode();
         }
+
+#pragma warning disable CA1303 //Do not pass literals as localized parameters
 
         /// <summary>
         /// CreateFile is called each time a request is made on a file system object.
@@ -277,6 +280,7 @@ namespace DokanNet
         /// <returns>The <see cref="NtStatus"/>.</returns>
         /// \see <a href="https://msdn.microsoft.com/en-us/library/windows/hardware/ff566424(v=vs.85).aspx">ZwCreateFile routine (MSDN)</a>
         /// <see cref="DokanNet.IDokanOperations.CreateFile"/>
+        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Explicit Exception handler")]
         public NtStatus ZwCreateFileProxy(
             string rawFileName,
             IntPtr securityContext,
@@ -303,14 +307,14 @@ namespace DokanNet
                 var desiredAccess  = (FileAccess    )(rawDesiredAccess       & FileAccessMask);
                 var shareAccess    = (FileShare     )(rawShareAccess         & FileShareMask);
 
-                logger.Debug("CreateFileProxy : {0}", rawFileName);
-                logger.Debug("\tCreationDisposition\t{0}", (FileMode)creationDisposition);
-                logger.Debug("\tFileAccess\t{0}", (FileAccess)rawDesiredAccess);
-                logger.Debug("\tFileShare\t{0}", (FileShare)rawShareAccess);
-                logger.Debug("\tFileOptions\t{0}", fileOptions);
-                logger.Debug("\tFileAttributes\t{0}", fileAttributes);
-                logger.Debug("\tContext\t{0}", rawFileInfo);
-                var result = operations.CreateFile(
+                _logger.Debug("CreateFileProxy : {0}", rawFileName);
+                _logger.Debug("\tCreationDisposition\t{0}", (FileMode)creationDisposition);
+                _logger.Debug("\tFileAccess\t{0}", (FileAccess)rawDesiredAccess);
+                _logger.Debug("\tFileShare\t{0}", (FileShare)rawShareAccess);
+                _logger.Debug("\tFileOptions\t{0}", fileOptions);
+                _logger.Debug("\tFileAttributes\t{0}", fileAttributes);
+                _logger.Debug("\tContext\t{0}", rawFileInfo);
+                var result = _operations.CreateFile(
                     rawFileName,
                     desiredAccess,
                     shareAccess,
@@ -319,56 +323,56 @@ namespace DokanNet
                     fileAttributes,
                     rawFileInfo);
 
-                logger.Debug("CreateFileProxy : {0} Return : {1}", rawFileName, result);
+                _logger.Debug("CreateFileProxy : {0} Return : {1}", rawFileName, result);
                 return result;
             }
             catch (Exception ex)
             {
-                logger.Error("CreateFileProxy : {0} Throw : {1}", rawFileName, ex.Message);
+                _logger.Error("CreateFileProxy : {0} Throw : {1}", rawFileName, ex.Message);
                 return DokanResult.Unsuccessful;
             }
         }
 
         ////
-
+        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Explicit Exception handler")]
         public void CleanupProxy(string rawFileName, DokanFileInfo rawFileInfo)
         {
             try
             {
-                logger.Debug("CleanupProxy : {0}", rawFileName);
-                logger.Debug("\tContext\t{0}", rawFileInfo);
+                _logger.Debug("{0} : {1}", nameof(CleanupProxy), rawFileName);
+                _logger.Debug("\tContext\t{0}", rawFileInfo);
 
-                operations.Cleanup(rawFileName, rawFileInfo);
+                _operations.Cleanup(rawFileName, rawFileInfo);
 
-                logger.Debug("CleanupProxy : {0}", rawFileName);
+                _logger.Debug("{0} : {1}", nameof(CleanupProxy), rawFileName);
             }
             catch (Exception ex)
             {
-                logger.Error("CleanupProxy : {0} Throw : {1}", rawFileName, ex.Message);
+                _logger.Error("{0} : {1} Throw : {2}", nameof(CleanupProxy), rawFileName, ex.Message);
             }
         }
 
         ////
-
+        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Explicit Exception handler")]
         public void CloseFileProxy(string rawFileName, DokanFileInfo rawFileInfo)
         {
             try
             {
-                logger.Debug("CloseFileProxy : {0}", rawFileName);
-                logger.Debug("\tContext\t{0}", rawFileInfo);
+                _logger.Debug("{0} : {1}", nameof(CloseFileProxy), rawFileName);
+                _logger.Debug("\tContext\t{0}", rawFileInfo);
 
-                operations.CloseFile(rawFileName, rawFileInfo);
+                _operations.CloseFile(rawFileName, rawFileInfo);
 
-                logger.Debug("CloseFileProxy : {0}", rawFileName);
+                _logger.Debug("{0} : {1}", nameof(CloseFileProxy), rawFileName);
             }
             catch (Exception ex)
             {
-                logger.Error("CloseFileProxy : {0} Throw : {1}", rawFileName, ex.Message);
+                _logger.Error("{0} : {1} Throw : {2}", nameof(CloseFileProxy), rawFileName, ex.Message);
             }
         }
 
         ////
-
+        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Explicit Exception handler")]
         public NtStatus ReadFileProxy(
             string rawFileName,
             byte[] rawBuffer,
@@ -379,25 +383,25 @@ namespace DokanNet
         {
             try
             {
-                logger.Debug("ReadFileProxy : " + rawFileName);
-                logger.Debug("\tBufferLength\t" + rawBufferLength);
-                logger.Debug("\tOffset\t" + rawOffset);
-                logger.Debug("\tContext\t" + rawFileInfo);
+                _logger.Debug("ReadFileProxy : " + rawFileName);
+                _logger.Debug("\tBufferLength\t" + rawBufferLength);
+                _logger.Debug("\tOffset\t" + rawOffset);
+                _logger.Debug("\tContext\t" + rawFileInfo);
 
-                var result = operations.ReadFile(rawFileName, rawBuffer, out rawReadLength, rawOffset, rawFileInfo);
+                var result = _operations.ReadFile(rawFileName, rawBuffer, out rawReadLength, rawOffset, rawFileInfo);
 
-                logger.Debug("ReadFileProxy : " + rawFileName + " Return : " + result + " ReadLength : " + rawReadLength);
+                _logger.Debug("ReadFileProxy : " + rawFileName + " Return : " + result + " ReadLength : " + rawReadLength);
                 return result;
             }
             catch (Exception ex)
             {
-                logger.Error("ReadFileProxy : {0} Throw : {1}", rawFileName, ex.Message);
+                _logger.Error("ReadFileProxy : {0} Throw : {1}", rawFileName, ex.Message);
                 return DokanResult.InvalidParameter;
             }
         }
 
         ////
-
+        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Explicit Exception handler")]
         public NtStatus WriteFileProxy(
             string rawFileName,
             byte[] rawBuffer,
@@ -408,19 +412,19 @@ namespace DokanNet
         {
             try
             {
-                logger.Debug("WriteFileProxy : {0}", rawFileName);
-                logger.Debug("\tNumberOfBytesToWrite\t{0}", rawNumberOfBytesToWrite);
-                logger.Debug("\tOffset\t{0}", rawOffset);
-                logger.Debug("\tContext\t{0}", rawFileInfo);
+                _logger.Debug("WriteFileProxy : {0}", rawFileName);
+                _logger.Debug("\tNumberOfBytesToWrite\t{0}", rawNumberOfBytesToWrite);
+                _logger.Debug("\tOffset\t{0}", rawOffset);
+                _logger.Debug("\tContext\t{0}", rawFileInfo);
 
-                var result = operations.WriteFile(
+                var result = _operations.WriteFile(
                     rawFileName,
                     rawBuffer,
                     out rawNumberOfBytesWritten,
                     rawOffset,
                     rawFileInfo);
 
-                logger.Debug(
+                _logger.Debug(
                     "WriteFileProxy : {0} Return : {1} NumberOfBytesWritten : {2}",
                     rawFileName,
                     result,
@@ -429,34 +433,34 @@ namespace DokanNet
             }
             catch (Exception ex)
             {
-                logger.Error("WriteFileProxy : {0} Throw : {1}", rawFileName, ex.Message);
+                _logger.Error("WriteFileProxy : {0} Throw : {1}", rawFileName, ex.Message);
                 return DokanResult.InvalidParameter;
             }
         }
 
         ////
-
+        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Explicit Exception handler")]
         public NtStatus FlushFileBuffersProxy(string rawFileName, DokanFileInfo rawFileInfo)
         {
             try
             {
-                logger.Debug("FlushFileBuffersProxy : {0}", rawFileName);
-                logger.Debug("\tContext\t{0}", rawFileInfo);
+                _logger.Debug("FlushFileBuffersProxy : {0}", rawFileName);
+                _logger.Debug("\tContext\t{0}", rawFileInfo);
 
-                var result = operations.FlushFileBuffers(rawFileName, rawFileInfo);
+                var result = _operations.FlushFileBuffers(rawFileName, rawFileInfo);
 
-                logger.Debug("FlushFileBuffersProxy : {0} Return : {1}", rawFileName, result);
+                _logger.Debug("FlushFileBuffersProxy : {0} Return : {1}", rawFileName, result);
                 return result;
             }
             catch (Exception ex)
             {
-                logger.Error("FlushFileBuffersProxy : {0} Throw : {1}", rawFileName, ex.Message);
+                _logger.Error("FlushFileBuffersProxy : {0} Throw : {1}", rawFileName, ex.Message);
                 return DokanResult.InvalidParameter;
             }
         }
 
         ////
-
+        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Explicit Exception handler")]
         public NtStatus GetFileInformationProxy(
             string rawFileName,
             ref BY_HANDLE_FILE_INFORMATION rawHandleFileInformation,
@@ -464,77 +468,71 @@ namespace DokanNet
         {
             try
             {
-                logger.Debug("GetFileInformationProxy : {0}", rawFileName);
-                logger.Debug("\tContext\t{0}", rawFileInfo);
+                _logger.Debug("GetFileInformationProxy : {0}", rawFileName);
+                _logger.Debug("\tContext\t{0}", rawFileInfo);
 
-                var result = operations.GetFileInformation(rawFileName, out FileInformation fi, rawFileInfo);
+                var result = _operations.GetFileInformation(rawFileName, out FileInformation fi, rawFileInfo);
 
                 if (result == DokanResult.Success)
                 {
                     Debug.Assert(fi.FileName != null, "FileName must not be null");
-                    logger.Debug("\tFileName\t{0}", fi.FileName);
-                    logger.Debug("\tAttributes\t{0}", fi.Attributes);
-                    logger.Debug("\tCreationTime\t{0}", fi.CreationTime);
-                    logger.Debug("\tLastAccessTime\t{0}", fi.LastAccessTime);
-                    logger.Debug("\tLastWriteTime\t{0}", fi.LastWriteTime);
-                    logger.Debug("\tLength\t{0}", fi.Length);
+                    _logger.Debug("\tFileName\t{0}", fi.FileName);
+                    _logger.Debug("\tAttributes\t{0}", fi.Attributes);
+                    _logger.Debug("\tCreationTime\t{0}", fi.CreationTime);
+                    _logger.Debug("\tLastAccessTime\t{0}", fi.LastAccessTime);
+                    _logger.Debug("\tLastWriteTime\t{0}", fi.LastWriteTime);
+                    _logger.Debug("\tLength\t{0}", fi.Length);
 
-                    rawHandleFileInformation.dwFileAttributes = (uint)fi.Attributes /* + FILE_ATTRIBUTE_VIRTUAL*/;
+                    rawHandleFileInformation.FileAttributes = (uint)fi.Attributes /* + FILE_ATTRIBUTE_VIRTUAL*/;
 
-                    var ctime = ToFileTime(fi.CreationTime);
-                    var atime = ToFileTime(fi.LastAccessTime);
-                    var mtime = ToFileTime(fi.LastWriteTime);
-                    rawHandleFileInformation.ftCreationTime.dwHighDateTime = (int)(ctime >> 32);
-                    rawHandleFileInformation.ftCreationTime.dwLowDateTime = (int)(ctime & 0xffffffff);
+                    var creationTime = ToFileTime(fi.CreationTime);
+                    var lastAccessTime = ToFileTime(fi.LastAccessTime);
+                    var lastWriteTime = ToFileTime(fi.LastWriteTime);
+                    rawHandleFileInformation.CreationTime = creationTime;
+                    rawHandleFileInformation.LastAccessTime = lastAccessTime;
+                    rawHandleFileInformation.LastWriteTime = lastWriteTime;
 
-                    rawHandleFileInformation.ftLastAccessTime.dwHighDateTime = (int)(atime >> 32);
-                    rawHandleFileInformation.ftLastAccessTime.dwLowDateTime = (int)(atime & 0xffffffff);
+                    rawHandleFileInformation.VolumeSerialNumber = _serialNumber;
 
-                    rawHandleFileInformation.ftLastWriteTime.dwHighDateTime = (int)(mtime >> 32);
-                    rawHandleFileInformation.ftLastWriteTime.dwLowDateTime = (int)(mtime & 0xffffffff);
-
-                    rawHandleFileInformation.dwVolumeSerialNumber = serialNumber;
-
-                    rawHandleFileInformation.nFileSizeLow = (uint)(fi.Length & 0xffffffff);
-                    rawHandleFileInformation.nFileSizeHigh = (uint)(fi.Length >> 32);
-                    rawHandleFileInformation.dwNumberOfLinks = 1;
-                    rawHandleFileInformation.nFileIndexHigh = 0;
-                    rawHandleFileInformation.nFileIndexLow = (uint)fi.FileName?.GetHashCode();
+                    rawHandleFileInformation.FileSize = fi.Length;
+                    rawHandleFileInformation.NumberOfLinks = 1;
+                    rawHandleFileInformation.FileIndexHigh = 0;
+                    rawHandleFileInformation.FileIndexLow = (uint) (fi.FileName?.GetHashCode() ?? 0);
                 }
 
-                logger.Debug("GetFileInformationProxy : {0} Return : {1}", rawFileName, result);
+                _logger.Debug("GetFileInformationProxy : {0} Return : {1}", rawFileName, result);
                 return result;
             }
             catch (Exception ex)
             {
-                logger.Error("GetFileInformationProxy : {0} Throw : {1}", rawFileName, ex.Message);
+                _logger.Error("GetFileInformationProxy : {0} Throw : {1}", rawFileName, ex.Message);
                 return DokanResult.InvalidParameter;
             }
         }
 
         ////
-
+        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Explicit Exception handler")]
         public NtStatus FindFilesProxy(string rawFileName, IntPtr rawFillFindData, DokanFileInfo rawFileInfo)
         {
             try
             {
 
-                logger.Debug("FindFilesProxy : {0}", rawFileName);
-                logger.Debug("\tContext\t{0}", rawFileInfo);
+                _logger.Debug("FindFilesProxy : {0}", rawFileName);
+                _logger.Debug("\tContext\t{0}", rawFileInfo);
 
-                var result = operations.FindFiles(rawFileName, out IList<FileInformation> files, rawFileInfo);
+                var result = _operations.FindFiles(rawFileName, out IList<FileInformation> files, rawFileInfo);
 
                 Debug.Assert(files != null, "Files must not be null");
                 if (result == DokanResult.Success && files.Count != 0)
                 {
                     foreach (var fi in files)
                     {
-                        logger.Debug("\tFileName\t{0}", fi.FileName);
-                        logger.Debug("\t\tAttributes\t{0}", fi.Attributes);
-                        logger.Debug("\t\tCreationTime\t{0}", fi.CreationTime);
-                        logger.Debug("\t\tLastAccessTime\t{0}", fi.LastAccessTime);
-                        logger.Debug("\t\tLastWriteTime\t{0}", fi.LastWriteTime);
-                        logger.Debug("\t\tLength\t{0}", fi.Length);
+                        _logger.Debug("\tFileName\t{0}", fi.FileName);
+                        _logger.Debug("\t\tAttributes\t{0}", fi.Attributes);
+                        _logger.Debug("\t\tCreationTime\t{0}", fi.CreationTime);
+                        _logger.Debug("\t\tLastAccessTime\t{0}", fi.LastAccessTime);
+                        _logger.Debug("\t\tLastWriteTime\t{0}", fi.LastWriteTime);
+                        _logger.Debug("\t\tLength\t{0}", fi.Length);
                     }
 
                     var fill = GetDataFromPointer<FILL_FIND_FILE_DATA>(rawFillFindData);
@@ -546,16 +544,17 @@ namespace DokanNet
                     }
                 }
 
-                logger.Debug("FindFilesProxy : {0} Return : {1}", rawFileName, result);
+                _logger.Debug("FindFilesProxy : {0} Return : {1}", rawFileName, result);
                 return result;
             }
             catch (Exception ex)
             {
-                logger.Error("FindFilesProxy : {0} Throw : {1}", rawFileName, ex.Message);
+                _logger.Error("FindFilesProxy : {0} Throw : {1}", rawFileName, ex.Message);
                 return DokanResult.InvalidParameter;
             }
         }
 
+        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Explicit Exception handler")]
         public NtStatus FindFilesWithPatternProxy(
             string rawFileName,
             string rawSearchPattern,
@@ -565,23 +564,23 @@ namespace DokanNet
             try
             {
 
-                logger.Debug("FindFilesWithPatternProxy : {0}", rawFileName);
-                logger.Debug("\trawSearchPattern\t{0}", rawSearchPattern);
-                logger.Debug("\tContext\t{0}", rawFileInfo);
+                _logger.Debug("FindFilesWithPatternProxy : {0}", rawFileName);
+                _logger.Debug("\trawSearchPattern\t{0}", rawSearchPattern);
+                _logger.Debug("\tContext\t{0}", rawFileInfo);
 
-                var result = operations.FindFilesWithPattern(rawFileName, rawSearchPattern, out IList<FileInformation> files, rawFileInfo);
+                var result = _operations.FindFilesWithPattern(rawFileName, rawSearchPattern, out IList<FileInformation> files, rawFileInfo);
 
                 Debug.Assert(files != null, "Files must not be null");
                 if (result == DokanResult.Success && files.Any())
                 {
                     foreach (var fi in files)
                     {
-                        logger.Debug("\tFileName\t{0}", fi.FileName);
-                        logger.Debug("\t\tAttributes\t{0}", fi.Attributes);
-                        logger.Debug("\t\tCreationTime\t{0}", fi.CreationTime);
-                        logger.Debug("\t\tLastAccessTime\t{0}", fi.LastAccessTime);
-                        logger.Debug("\t\tLastWriteTime\t{0}", fi.LastWriteTime);
-                        logger.Debug("\t\tLength\t{0}", fi.Length);
+                        _logger.Debug("\tFileName\t{0}", fi.FileName);
+                        _logger.Debug("\t\tAttributes\t{0}", fi.Attributes);
+                        _logger.Debug("\t\tCreationTime\t{0}", fi.CreationTime);
+                        _logger.Debug("\t\tLastAccessTime\t{0}", fi.LastAccessTime);
+                        _logger.Debug("\t\tLastWriteTime\t{0}", fi.LastWriteTime);
+                        _logger.Debug("\t\tLength\t{0}", fi.Length);
                     }
 
                     var fill = GetDataFromPointer<FILL_FIND_FILE_DATA>(rawFillFindData);
@@ -593,12 +592,12 @@ namespace DokanNet
                     }
                 }
 
-                logger.Debug("FindFilesWithPatternProxy : {0} Return : {1}", rawFileName, result);
+                _logger.Debug("FindFilesWithPatternProxy : {0} Return : {1}", rawFileName, result);
                 return result;
             }
             catch (Exception ex)
             {
-                logger.Error("FindFilesWithPatternProxy : {0} Throw : {1}", rawFileName, ex.Message);
+                _logger.Error("FindFilesWithPatternProxy : {0} Throw : {1}", rawFileName, ex.Message);
                 return DokanResult.InvalidParameter;
             }
         }
@@ -606,53 +605,41 @@ namespace DokanNet
         private static void AddTo(FILL_FIND_FILE_DATA fill, DokanFileInfo rawFileInfo, FileInformation fi)
         {
             Debug.Assert(!string.IsNullOrEmpty(fi.FileName), "FileName must not be empty or null");
-            var ctime = ToFileTime(fi.CreationTime);
-            var atime = ToFileTime(fi.LastAccessTime);
-            var mtime = ToFileTime(fi.LastWriteTime);
+            var creationTime = ToFileTime(fi.CreationTime);
+            var lastAccessTime = ToFileTime(fi.LastAccessTime);
+            var lastWriteTime = ToFileTime(fi.LastWriteTime);
             var data = new WIN32_FIND_DATA
             {
-                dwFileAttributes = fi.Attributes,
-                ftCreationTime =
-                {
-                    dwHighDateTime = (int) (ctime >> 32),
-                    dwLowDateTime = (int) (ctime & 0xffffffff)
-                },
-                ftLastAccessTime =
-                {
-                    dwHighDateTime = (int) (atime >> 32),
-                    dwLowDateTime = (int) (atime & 0xffffffff)
-                },
-                ftLastWriteTime =
-                {
-                    dwHighDateTime = (int) (mtime >> 32),
-                    dwLowDateTime = (int) (mtime & 0xffffffff)
-                },
-                nFileSizeLow = (uint)(fi.Length & 0xffffffff),
-                nFileSizeHigh = (uint)(fi.Length >> 32),
-                cFileName = fi.FileName
+                FileAttributes = fi.Attributes,
+                CreationTime = creationTime,
+                LastAccessTime = lastAccessTime,
+                LastWriteTime = lastWriteTime,
+                FileSize = fi.Length,
+                FileName = fi.FileName
             };
             //ZeroMemory(&data, sizeof(WIN32_FIND_DATAW));
 
             fill(ref data, rawFileInfo);
         }
 
+        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Explicit Exception handler")]
         public NtStatus FindStreamsProxy(string rawFileName, IntPtr rawFillFindData, DokanFileInfo rawFileInfo)
         {
             try
             {
 
-                logger.Debug("FindStreamsProxy: {0}", rawFileName);
-                logger.Debug("\tContext\t{0}", rawFileInfo);
+                _logger.Debug("FindStreamsProxy: {0}", rawFileName);
+                _logger.Debug("\tContext\t{0}", rawFileInfo);
 
-                var result = operations.FindStreams(rawFileName, out IList<FileInformation> files, rawFileInfo);
+                var result = _operations.FindStreams(rawFileName, out IList<FileInformation> files, rawFileInfo);
 
                 Debug.Assert(!(result == DokanResult.NotImplemented && files == null));
                 if (result == DokanResult.Success && files.Count != 0)
                 {
                     foreach (var fi in files)
                     {
-                        logger.Debug("\tFileName\t{0}", fi.FileName);
-                        logger.Debug("\t\tLength\t{0}", fi.Length);
+                        _logger.Debug("\tFileName\t{0}", fi.FileName);
+                        _logger.Debug("\t\tLength\t{0}", fi.Length);
                     }
 
                     var fill = GetDataFromPointer<FILL_FIND_STREAM_DATA>(rawFillFindData);
@@ -664,22 +651,22 @@ namespace DokanNet
                     }
                 }
 
-                logger.Debug("FindStreamsProxy : {0} Return : {1}", rawFileName, result);
+                _logger.Debug("FindStreamsProxy : {0} Return : {1}", rawFileName, result);
                 return result;
             }
             catch (Exception ex)
             {
-                logger.Error("FindStreamsProxy : {0} Throw : {1}", rawFileName, ex.Message);
+                _logger.Error("FindStreamsProxy : {0} Throw : {1}", rawFileName, ex.Message);
                 return DokanResult.InvalidParameter;
             }
         }
 
-        private static T GetDataFromPointer<T>(IntPtr pointer) where T: class 
+        private static T GetDataFromPointer<T>(IntPtr rawDelegate) where T: class 
         {
 #if NET451_OR_GREATER
-            return Marshal.GetDelegateForFunctionPointer<T>(pointer);
+            return Marshal.GetDelegateForFunctionPointer<T>(rawDelegate);
 #else
-            return Marshal.GetDelegateForFunctionPointer(pointer, typeof(T)) as T;
+            return Marshal.GetDelegateForFunctionPointer(rawDelegate, typeof(T)) as T;
 #endif
         }
         private static void AddTo(FILL_FIND_STREAM_DATA fill, DokanFileInfo rawFileInfo, FileInformation fi)
@@ -688,7 +675,7 @@ namespace DokanNet
             var data = new WIN32_FIND_STREAM_DATA
             {
                 StreamSize = fi.Length,
-                cStreamName = fi.FileName
+                StreamName = fi.FileName
             };
             //ZeroMemory(&data, sizeof(WIN32_FIND_DATAW));
 
@@ -696,71 +683,71 @@ namespace DokanNet
         }
 
         ////
-
+        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Explicit Exception handler")]
         public NtStatus SetEndOfFileProxy(string rawFileName, long rawByteOffset, DokanFileInfo rawFileInfo)
         {
             try
             {
-                logger.Debug("SetEndOfFileProxy : {0}", rawFileName);
-                logger.Debug("\tByteOffset\t{0}", rawByteOffset);
-                logger.Debug("\tContext\t{0}", rawFileInfo);
+                _logger.Debug("SetEndOfFileProxy : {0}", rawFileName);
+                _logger.Debug("\tByteOffset\t{0}", rawByteOffset);
+                _logger.Debug("\tContext\t{0}", rawFileInfo);
 
-                var result = operations.SetEndOfFile(rawFileName, rawByteOffset, rawFileInfo);
+                var result = _operations.SetEndOfFile(rawFileName, rawByteOffset, rawFileInfo);
 
-                logger.Debug("SetEndOfFileProxy : {0} Return : {1}", rawFileName, result);
+                _logger.Debug("SetEndOfFileProxy : {0} Return : {1}", rawFileName, result);
                 return result;
             }
             catch (Exception ex)
             {
-                logger.Error("SetEndOfFileProxy : {0} Throw : {1}", rawFileName, ex.Message);
+                _logger.Error("SetEndOfFileProxy : {0} Throw : {1}", rawFileName, ex.Message);
                 return DokanResult.InvalidParameter;
             }
         }
-
+        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Explicit Exception handler")]
         public NtStatus SetAllocationSizeProxy(string rawFileName, long rawLength, DokanFileInfo rawFileInfo)
         {
             try
             {
-                logger.Debug("SetAllocationSizeProxy : {0}", rawFileName);
-                logger.Debug("\tLength\t{0}", rawLength);
-                logger.Debug("\tContext\t{0}", rawFileInfo);
+                _logger.Debug("SetAllocationSizeProxy : {0}", rawFileName);
+                _logger.Debug("\tLength\t{0}", rawLength);
+                _logger.Debug("\tContext\t{0}", rawFileInfo);
 
-                var result = operations.SetAllocationSize(rawFileName, rawLength, rawFileInfo);
+                var result = _operations.SetAllocationSize(rawFileName, rawLength, rawFileInfo);
 
-                logger.Debug("SetAllocationSizeProxy : {0} Return : {1}", rawFileName, result);
+                _logger.Debug("SetAllocationSizeProxy : {0} Return : {1}", rawFileName, result);
                 return result;
             }
             catch (Exception ex)
             {
-                logger.Error("SetAllocationSizeProxy : {0} Throw : {1}", rawFileName, ex.Message);
+                _logger.Error("SetAllocationSizeProxy : {0} Throw : {1}", rawFileName, ex.Message);
                 return DokanResult.InvalidParameter;
             }
         }
 
         ////
-
+        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Explicit Exception handler")]
         public NtStatus SetFileAttributesProxy(string rawFileName, uint rawAttributes, DokanFileInfo rawFileInfo)
         {
             try
             {
-                logger.Debug("SetFileAttributesProxy : {0}", rawFileName);
-                logger.Debug("\tAttributes\t{0}", (FileAttributes)rawAttributes);
-                logger.Debug("\tContext\t{0}", rawFileInfo);
+                _logger.Debug("SetFileAttributesProxy : {0}", rawFileName);
+                _logger.Debug("\tAttributes\t{0}", (FileAttributes)rawAttributes);
+                _logger.Debug("\tContext\t{0}", rawFileInfo);
 
-                var result = operations.SetFileAttributes(rawFileName, (FileAttributes)rawAttributes, rawFileInfo);
+                var result = _operations.SetFileAttributes(rawFileName, (FileAttributes)rawAttributes, rawFileInfo);
 
-                logger.Debug("SetFileAttributesProxy : {0} Return : {1}", rawFileName, result);
+                _logger.Debug("SetFileAttributesProxy : {0} Return : {1}", rawFileName, result);
                 return result;
             }
             catch (Exception ex)
             {
-                logger.Error("SetFileAttributesProxy : {0} Throw : {1}", rawFileName, ex.Message);
+                _logger.Error("SetFileAttributesProxy : {0} Throw : {1}", rawFileName, ex.Message);
                 return DokanResult.InvalidParameter;
             }
         }
 
         ////
-
+        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Explicit Exception handler")]
         public NtStatus SetFileTimeProxy(
             string rawFileName,
             ref FILETIME rawCreationTime,
@@ -786,68 +773,68 @@ namespace DokanNet
                                             (uint) rawLastWriteTime.dwLowDateTime)
                     : (DateTime?) null;
 
-                logger.Debug("SetFileTimeProxy : {0}", rawFileName);
-                logger.Debug("\tCreateTime\t{0}", ctime);
-                logger.Debug("\tAccessTime\t{0}", atime);
-                logger.Debug("\tWriteTime\t{0}", mtime);
-                logger.Debug("\tContext\t{0}", rawFileInfo);
+                _logger.Debug("SetFileTimeProxy : {0}", rawFileName);
+                _logger.Debug("\tCreateTime\t{0}", ctime);
+                _logger.Debug("\tAccessTime\t{0}", atime);
+                _logger.Debug("\tWriteTime\t{0}", mtime);
+                _logger.Debug("\tContext\t{0}", rawFileInfo);
 
-                var result = operations.SetFileTime(rawFileName, ctime, atime, mtime, rawFileInfo);
+                var result = _operations.SetFileTime(rawFileName, ctime, atime, mtime, rawFileInfo);
 
-                logger.Debug("SetFileTimeProxy : {0} Return : {1}", rawFileName, result);
+                _logger.Debug("SetFileTimeProxy : {0} Return : {1}", rawFileName, result);
                 return result;
             }
             catch (Exception ex)
             {
-                logger.Error("SetFileTimeProxy : {0} Throw : {1}", rawFileName, ex.Message);
+                _logger.Error("SetFileTimeProxy : {0} Throw : {1}", rawFileName, ex.Message);
                 return DokanResult.InvalidParameter;
             }
         }
 
         ////
-
+        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Explicit Exception handler")]
         public NtStatus DeleteFileProxy(string rawFileName, DokanFileInfo rawFileInfo)
         {
             try
             {
-                logger.Debug("DeleteFileProxy : {0}", rawFileName);
-                logger.Debug("\tContext\t{0}", rawFileInfo);
+                _logger.Debug("DeleteFileProxy : {0}", rawFileName);
+                _logger.Debug("\tContext\t{0}", rawFileInfo);
 
-                var result = operations.DeleteFile(rawFileName, rawFileInfo);
+                var result = _operations.DeleteFile(rawFileName, rawFileInfo);
 
-                logger.Debug("DeleteFileProxy : {0} Return : {1}", rawFileName, result);
+                _logger.Debug("DeleteFileProxy : {0} Return : {1}", rawFileName, result);
                 return result;
             }
             catch (Exception ex)
             {
-                logger.Error("DeleteFileProxy : {0} Throw : {1}", rawFileName, ex.Message);
+                _logger.Error("DeleteFileProxy : {0} Throw : {1}", rawFileName, ex.Message);
                 return DokanResult.InvalidParameter;
             }
         }
 
         ////
-
+        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Explicit Exception handler")]
         public NtStatus DeleteDirectoryProxy(string rawFileName, DokanFileInfo rawFileInfo)
         {
             try
             {
-                logger.Debug("DeleteDirectoryProxy : {0}", rawFileName);
-                logger.Debug("\tContext\t{0}", rawFileInfo);
+                _logger.Debug("DeleteDirectoryProxy : {0}", rawFileName);
+                _logger.Debug("\tContext\t{0}", rawFileInfo);
 
-                var result = operations.DeleteDirectory(rawFileName, rawFileInfo);
+                var result = _operations.DeleteDirectory(rawFileName, rawFileInfo);
 
-                logger.Debug("DeleteDirectoryProxy : {0} Return : {1}", rawFileName, result);
+                _logger.Debug("DeleteDirectoryProxy : {0} Return : {1}", rawFileName, result);
                 return result;
             }
             catch (Exception ex)
             {
-                logger.Error("DeleteDirectoryProxy : {0} Throw : {1}", rawFileName, ex.Message);
+                _logger.Error("DeleteDirectoryProxy : {0} Throw : {1}", rawFileName, ex.Message);
                 return DokanResult.InvalidParameter;
             }
         }
 
         ////
-
+        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Explicit Exception handler")]
         public NtStatus MoveFileProxy(
             string rawFileName,
             string rawNewFileName,
@@ -856,48 +843,48 @@ namespace DokanNet
         {
             try
             {
-                logger.Debug("MoveFileProxy : {0}", rawFileName);
-                logger.Debug("\tNewFileName\t{0}", rawNewFileName);
-                logger.Debug("\tReplaceIfExisting\t{0}", rawReplaceIfExisting);
-                logger.Debug("\tContext\t{0}", rawFileInfo);
+                _logger.Debug("MoveFileProxy : {0}", rawFileName);
+                _logger.Debug("\tNewFileName\t{0}", rawNewFileName);
+                _logger.Debug("\tReplaceIfExisting\t{0}", rawReplaceIfExisting);
+                _logger.Debug("\tContext\t{0}", rawFileInfo);
 
-                var result = operations.MoveFile(rawFileName, rawNewFileName, rawReplaceIfExisting, rawFileInfo);
+                var result = _operations.MoveFile(rawFileName, rawNewFileName, rawReplaceIfExisting, rawFileInfo);
 
-                logger.Debug("MoveFileProxy : {0} Return : {1}", rawFileName, result);
+                _logger.Debug("MoveFileProxy : {0} Return : {1}", rawFileName, result);
                 return result;
             }
             catch (Exception ex)
             {
-                logger.Error("MoveFileProxy : {0} Throw : {1}", rawFileName, ex.Message);
+                _logger.Error("MoveFileProxy : {0} Throw : {1}", rawFileName, ex.Message);
                 return DokanResult.InvalidParameter;
             }
         }
 
         ////
-
+        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Explicit Exception handler")]
         public NtStatus LockFileProxy(string rawFileName, long rawByteOffset, long rawLength, DokanFileInfo rawFileInfo)
         {
             try
             {
-                logger.Debug("LockFileProxy : {0}", rawFileName);
-                logger.Debug("\tByteOffset\t{0}", rawByteOffset);
-                logger.Debug("\tLength\t{0}", rawLength);
-                logger.Debug("\tContext\t{0}", rawFileInfo);
+                _logger.Debug("LockFileProxy : {0}", rawFileName);
+                _logger.Debug("\tByteOffset\t{0}", rawByteOffset);
+                _logger.Debug("\tLength\t{0}", rawLength);
+                _logger.Debug("\tContext\t{0}", rawFileInfo);
 
-                var result = operations.LockFile(rawFileName, rawByteOffset, rawLength, rawFileInfo);
+                var result = _operations.LockFile(rawFileName, rawByteOffset, rawLength, rawFileInfo);
 
-                logger.Debug("LockFileProxy : {0} Return : {1}", rawFileName, result);
+                _logger.Debug("LockFileProxy : {0} Return : {1}", rawFileName, result);
                 return result;
             }
             catch (Exception ex)
             {
-                logger.Error("LockFileProxy : {0} Throw : {1}", rawFileName, ex.Message);
+                _logger.Error("LockFileProxy : {0} Throw : {1}", rawFileName, ex.Message);
                 return DokanResult.InvalidParameter;
             }
         }
 
         ////
-
+        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Explicit Exception handler")]
         public NtStatus UnlockFileProxy(
             string rawFileName,
             long rawByteOffset,
@@ -906,25 +893,25 @@ namespace DokanNet
         {
             try
             {
-                logger.Debug("UnlockFileProxy : {0}", rawFileName);
-                logger.Debug("\tByteOffset\t{0}", rawByteOffset);
-                logger.Debug("\tLength\t{0}", rawLength);
-                logger.Debug("\tContext\t{0}", rawFileInfo);
+                _logger.Debug("UnlockFileProxy : {0}", rawFileName);
+                _logger.Debug("\tByteOffset\t{0}", rawByteOffset);
+                _logger.Debug("\tLength\t{0}", rawLength);
+                _logger.Debug("\tContext\t{0}", rawFileInfo);
 
-                var result = operations.UnlockFile(rawFileName, rawByteOffset, rawLength, rawFileInfo);
+                var result = _operations.UnlockFile(rawFileName, rawByteOffset, rawLength, rawFileInfo);
 
-                logger.Debug("UnlockFileProxy : {0} Return : {1}", rawFileName, result);
+                _logger.Debug("UnlockFileProxy : {0} Return : {1}", rawFileName, result);
                 return result;
             }
             catch (Exception ex)
             {
-                logger.Error("UnlockFileProxy : {0} Throw : {1}", rawFileName, ex.Message);
+                _logger.Error("UnlockFileProxy : {0} Throw : {1}", rawFileName, ex.Message);
                 return DokanResult.InvalidParameter;
             }
         }
 
         ////
-
+        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         public NtStatus GetDiskFreeSpaceProxy(
             ref long rawFreeBytesAvailable,
             ref long rawTotalNumberOfBytes,
@@ -933,28 +920,29 @@ namespace DokanNet
         {
             try
             {
-                logger.Debug("GetDiskFreeSpaceProxy:");
-                logger.Debug("\tContext\t{0}", rawFileInfo);
+                _logger.Debug("GetDiskFreeSpaceProxy:");
+                _logger.Debug("\tContext\t{0}", rawFileInfo);
 
-                var result = operations.GetDiskFreeSpace(
+                var result = _operations.GetDiskFreeSpace(
                     out rawFreeBytesAvailable,
                     out rawTotalNumberOfBytes,
                     out rawTotalNumberOfFreeBytes,
                     rawFileInfo);
 
-                logger.Debug("\tFreeBytesAvailable\t{0}", rawFreeBytesAvailable);
-                logger.Debug("\tTotalNumberOfBytes\t{0}", rawTotalNumberOfBytes);
-                logger.Debug("\tTotalNumberOfFreeBytes\t{0}", rawTotalNumberOfFreeBytes);
-                logger.Debug("GetDiskFreeSpaceProxy Return : {0}", result);
+                _logger.Debug("\tFreeBytesAvailable\t{0}", rawFreeBytesAvailable);
+                _logger.Debug("\tTotalNumberOfBytes\t{0}", rawTotalNumberOfBytes);
+                _logger.Debug("\tTotalNumberOfFreeBytes\t{0}", rawTotalNumberOfFreeBytes);
+                _logger.Debug("GetDiskFreeSpaceProxy Return : {0}", result);
                 return result;
             }
             catch (Exception ex)
             {
-                logger.Error("GetDiskFreeSpaceProxy Throw : {0}", ex.Message);
+                _logger.Error("GetDiskFreeSpaceProxy Throw : {0}", ex.Message);
                 return DokanResult.InvalidParameter;
             }
         }
 
+        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Explicit Exception handler")]
         public NtStatus GetVolumeInformationProxy(
             StringBuilder rawVolumeNameBuffer,
             uint rawVolumeNameSize,
@@ -966,12 +954,12 @@ namespace DokanNet
             DokanFileInfo rawFileInfo)
         {
             rawMaximumComponentLength = 256;
-            rawVolumeSerialNumber = serialNumber;
+            rawVolumeSerialNumber = _serialNumber;
             try
             {
-                logger.Debug("GetVolumeInformationProxy:");
-                logger.Debug("\tContext\t{0}", rawFileInfo);
-                var result = operations.GetVolumeInformation(out string label, out rawFileSystemFlags, out string name, rawFileInfo);
+                _logger.Debug("GetVolumeInformationProxy:");
+                _logger.Debug("\tContext\t{0}", rawFileInfo);
+                var result = _operations.GetVolumeInformation(out string label, out rawFileSystemFlags, out string name, rawFileInfo);
 
                 if (result == DokanResult.Success)
                 {
@@ -980,60 +968,63 @@ namespace DokanNet
                     rawVolumeNameBuffer.Append(label);
                     rawFileSystemNameBuffer.Append(name);
 
-                    logger.Debug("\tVolumeNameBuffer\t{0}", rawVolumeNameBuffer);
-                    logger.Debug("\tFileSystemNameBuffer\t{0}", rawFileSystemNameBuffer);
-                    logger.Debug("\tVolumeSerialNumber\t{0}", rawVolumeSerialNumber);
-                    logger.Debug("\tFileSystemFlags\t{0}", rawFileSystemFlags);
+                    _logger.Debug("\tVolumeNameBuffer\t{0}", rawVolumeNameBuffer);
+                    _logger.Debug("\tFileSystemNameBuffer\t{0}", rawFileSystemNameBuffer);
+                    _logger.Debug("\tVolumeSerialNumber\t{0}", rawVolumeSerialNumber);
+                    _logger.Debug("\tFileSystemFlags\t{0}", rawFileSystemFlags);
                 }
 
-                logger.Debug("GetVolumeInformationProxy Return : {0}", result);
+                _logger.Debug("GetVolumeInformationProxy Return : {0}", result);
                 return result;
             }
             catch (Exception ex)
             {
-                logger.Error("GetVolumeInformationProxy Throw : {0}", ex.Message);
+                _logger.Error("GetVolumeInformationProxy Throw : {0}", ex.Message);
                 return DokanResult.InvalidParameter;
             }
         }
 
+        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Explicit Exception handler")]
         public NtStatus MountedProxy(DokanFileInfo rawFileInfo)
         {
             try
             {
-                logger.Debug("MountedProxy:");
-                logger.Debug("\tContext\t{0}", rawFileInfo);
+                _logger.Debug("MountedProxy:");
+                _logger.Debug("\tContext\t{0}", rawFileInfo);
 
-                var result = operations.Mounted(rawFileInfo);
+                var result = _operations.Mounted(rawFileInfo);
 
-                logger.Debug("MountedProxy Return : {0}", result);
+                _logger.Debug("MountedProxy Return : {0}", result);
                 return result;
             }
             catch (Exception ex)
             {
-                logger.Error("MountedProxy Throw : {0}", ex.Message);
+                _logger.Error("MountedProxy Throw : {0}", ex.Message);
                 return DokanResult.InvalidParameter;
             }
         }
 
+        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Explicit Exception handler")]
         public NtStatus UnmountedProxy(DokanFileInfo rawFileInfo)
         {
             try
             {
-                logger.Debug("UnmountedProxy:");
-                logger.Debug("\tContext\t{0}", rawFileInfo);
+                _logger.Debug("UnmountedProxy:");
+                _logger.Debug("\tContext\t{0}", rawFileInfo);
 
-                var result = operations.Unmounted(rawFileInfo);
+                var result = _operations.Unmounted(rawFileInfo);
 
-                logger.Debug("UnmountedProxy Return : {0}", result);
+                _logger.Debug("UnmountedProxy Return : {0}", result);
                 return result;
             }
             catch (Exception ex)
             {
-                logger.Error("UnmountedProxy Throw : {0}", ex.Message);
+                _logger.Error("UnmountedProxy Throw : {0}", ex.Message);
                 return DokanResult.InvalidParameter;
             }
         }
 
+        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Explicit Exception handler")]
         public NtStatus GetFileSecurityProxy(
             string rawFileName,
             ref SECURITY_INFORMATION rawRequestedInformation,
@@ -1065,15 +1056,15 @@ namespace DokanNet
             }
             try
             {
-                logger.Debug("GetFileSecurityProxy : {0}", rawFileName);
-                logger.Debug("\tFileSystemSecurity\t{0}", sect);
-                logger.Debug("\tContext\t{0}", rawFileInfo);
+                _logger.Debug("GetFileSecurityProxy : {0}", rawFileName);
+                _logger.Debug("\tFileSystemSecurity\t{0}", sect);
+                _logger.Debug("\tContext\t{0}", rawFileInfo);
 
-                var result = operations.GetFileSecurity(rawFileName, out FileSystemSecurity sec, sect, rawFileInfo);
+                var result = _operations.GetFileSecurity(rawFileName, out FileSystemSecurity sec, sect, rawFileInfo);
                 if (result == DokanResult.Success /*&& sec != null*/)
                 {
                     Debug.Assert(sec != null, $"{nameof(sec)} must not be null");
-                    logger.Debug("\tFileSystemSecurity Result : {0}", sec);
+                    _logger.Debug("\tFileSystemSecurity Result : {0}", sec);
                     var buffer = sec.GetSecurityDescriptorBinaryForm();
                     rawSecurityDescriptorLengthNeeded = (uint)buffer.Length;
                     if (buffer.Length > rawSecurityDescriptorLength)
@@ -1082,16 +1073,17 @@ namespace DokanNet
                     Marshal.Copy(buffer, 0, rawSecurityDescriptor, buffer.Length);
                 }
 
-                logger.Debug("GetFileSecurityProxy : {0} Return : {1}", rawFileName, result);
+                _logger.Debug("GetFileSecurityProxy : {0} Return : {1}", rawFileName, result);
                 return result;
             }
             catch (Exception ex)
             {
-                logger.Error("GetFileSecurityProxy : {0} Throw : {1}", rawFileName, ex.Message);
+                _logger.Error("GetFileSecurityProxy : {0} Throw : {1}", rawFileName, ex.Message);
                 return DokanResult.InvalidParameter;
             }
         }
 
+        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Explicit Exception handler")]
         public NtStatus SetFileSecurityProxy(
             string rawFileName,
             ref SECURITY_INFORMATION rawSecurityInformation,
@@ -1127,41 +1119,46 @@ namespace DokanNet
                 var sec = rawFileInfo.IsDirectory ? (FileSystemSecurity)new DirectorySecurity() : new FileSecurity();
                 sec.SetSecurityDescriptorBinaryForm(buffer);
 
-                logger.Debug("SetFileSecurityProxy : {0}", rawFileName);
-                logger.Debug("\tAccessControlSections\t{0}", sect);
-                logger.Debug("\tFileSystemSecurity\t{0}", sec);
-                logger.Debug("\tContext\t{0}", rawFileInfo);
+                _logger.Debug("SetFileSecurityProxy : {0}", rawFileName);
+                _logger.Debug("\tAccessControlSections\t{0}", sect);
+                _logger.Debug("\tFileSystemSecurity\t{0}", sec);
+                _logger.Debug("\tContext\t{0}", rawFileInfo);
 
-                var result = operations.SetFileSecurity(rawFileName, sec, sect, rawFileInfo);
+                var result = _operations.SetFileSecurity(rawFileName, sec, sect, rawFileInfo);
 
-                logger.Debug("SetFileSecurityProxy : {0} Return : {1}", rawFileName, result);
+                _logger.Debug("SetFileSecurityProxy : {0} Return : {1}", rawFileName, result);
                 return result;
             }
             catch (Exception ex)
             {
-                logger.Error("SetFileSecurityProxy : {0} Throw : {1}", rawFileName, ex.Message);
+                _logger.Error("SetFileSecurityProxy : {0} Throw : {1}", rawFileName, ex.Message);
                 return DokanResult.InvalidParameter;
             }
         }
 
+#pragma warning restore CA1303 //Do not pass literals as localized parameters
+
         /// <summary>
-        /// Converts the value of <paramref name="dateTime"/> to a Windows file time.
+        /// Converts the value of <paramref name="dateTime"/> to a Windows file time of type <see cref="FILETIME"/>.
         /// If <paramref name="dateTime"/> is <c>null</c> or before 12:00 midnight January 1, 1601 C.E. UTC, it returns <c>0</c>.
         /// </summary>
-        /// <param name="dateTime">
-        /// The date Time.
-        /// </param>
+        /// <param name="dateTime">The <see cref="DateTime"/> to convert.</param>
         /// <returns>
         /// The value of <paramref name="dateTime"/> expressed as a Windows file time
         /// -or- it returns <c>0</c> if <paramref name="dateTime"/> is before 12:00 midnight January 1, 1601 C.E. UTC or <c>null</c>.
         /// </returns>
         /// \see <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa365739(v=vs.85).aspx">WIN32_FILE_ATTRIBUTE_DATA structure (MSDN)</a>
         [Pure]
-        private static long ToFileTime(DateTime? dateTime)
+        private static FILETIME ToFileTime(DateTime? dateTime)
         {
-            return dateTime.HasValue && dateTime.Value >= DateTime.FromFileTime(0)
+            var fileTimeRaw = dateTime.HasValue &&
+                              dateTime.Value >= DateTime.FromFileTime(0)
                 ? dateTime.Value.ToFileTime()
                 : 0;
+            FILETIME fileTime;
+            fileTime.dwHighDateTime = (int)(fileTimeRaw >> 32);
+            fileTime.dwLowDateTime = (int)(fileTimeRaw & 0xffffffff);
+            return fileTime;
         }
 
 #region Nested type: FILL_FIND_FILE_DATA

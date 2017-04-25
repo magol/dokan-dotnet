@@ -30,6 +30,7 @@ namespace DokanNet.Tests
                 GENERIC_READ = 0x80000000
             }
 
+            [SuppressMessage("Microsoft.Naming", "CA1714:FlagsEnumsShouldHavePluralNames", Justification = "Can not change name of pubic type")]
             [Flags]
             private enum ShareMode : uint
             {
@@ -210,7 +211,8 @@ namespace DokanNet.Tests
                     if (SetFilePointer(handle, (int) (fileSize & 0xffffffff), out offsetHigh, MoveMethod.FILE_BEGIN) !=
                         fileSize || offsetHigh != (int) (fileSize >> 32) || !SetEndOfFile(handle))
                     {
-                        chunks[0].Win32Error = Marshal.GetLastWin32Error();
+                        var lastError = Marshal.GetLastWin32Error();
+                        chunks[0].Win32Error = lastError;
                         throw new InvalidOperationException();
                     }
 
@@ -226,7 +228,10 @@ namespace DokanNet.Tests
                         var buffer = chunks[i].Buffer;
 
                         if (!WriteFileEx(handle, buffer, buffer.Length, ref overlapped, completions[i]))
-                            chunks[i].Win32Error = Marshal.GetLastWin32Error();
+                        {
+                            var lastError = Marshal.GetLastWin32Error();
+                            chunks[i].Win32Error = lastError;
+                        }
                     }
                 }
 

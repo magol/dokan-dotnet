@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using DokanNet.Logging;
 using DokanNet.Native;
 using DokanNet.Properties;
@@ -83,6 +84,7 @@ namespace DokanNet
         /// <param name="mountPoint">Mount point. Can be <c>M:\\</c> (drive letter) or <c>C:\\mount\\dokan</c> (path in NTFS).</param>
         /// <param name="logger"><see cref="ILogger"/> that will log all DokanNet debug informations</param>
         /// <exception cref="DokanException">If the mount fails.</exception>
+        [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed")]
         public static void Mount(this IDokanOperations operations, string mountPoint, ILogger logger = null)
         {
             Mount(operations, mountPoint, DokanOptions.FixedDrive, logger);
@@ -97,6 +99,7 @@ namespace DokanNet
         /// <param name="mountOptions"><see cref="DokanOptions"/> features enable for the mount.</param>
         /// <param name="logger"><see cref="ILogger"/> that will log all DokanNet debug informations.</param>
         /// <exception cref="DokanException">If the mount fails.</exception>
+        [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed")]
         public static void Mount(this IDokanOperations operations, string mountPoint, DokanOptions mountOptions,
             ILogger logger = null)
         {
@@ -113,6 +116,7 @@ namespace DokanNet
         /// <param name="threadCount">Number of threads to be used internally by %Dokan library. More thread will handle more event at the same time.</param>
         /// <param name="logger"><see cref="ILogger"/> that will log all DokanNet debug informations.</param>
         /// <exception cref="DokanException">If the mount fails.</exception>
+        [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed")]
         public static void Mount(this IDokanOperations operations, string mountPoint, DokanOptions mountOptions,
             int threadCount, ILogger logger = null)
         {
@@ -130,6 +134,7 @@ namespace DokanNet
         /// <param name="version">Version of the dokan features requested (Version "123" is equal to %Dokan version 1.2.3).</param>
         /// <param name="logger"><see cref="ILogger"/> that will log all DokanNet debug informations.</param>
         /// <exception cref="DokanException">If the mount fails.</exception>
+        [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed")]
         public static void Mount(this IDokanOperations operations, string mountPoint, DokanOptions mountOptions,
             int threadCount, int version, ILogger logger = null)
         {
@@ -149,6 +154,7 @@ namespace DokanNet
         /// <param name="timeout">Max timeout in ms of each request before dokan give up.</param>
         /// <param name="logger"><see cref="ILogger"/> that will log all DokanNet debug informations.</param>
         /// <exception cref="DokanException">If the mount fails.</exception>
+        [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed")]
         public static void Mount(this IDokanOperations operations, string mountPoint, DokanOptions mountOptions,
             int threadCount, int version, TimeSpan timeout, ILogger logger = null)
         {
@@ -168,6 +174,7 @@ namespace DokanNet
         /// <param name="uncName">UNC name used for network volume.</param>
         /// <param name="logger"><see cref="ILogger"/> that will log all DokanNet debug informations.</param>
         /// <exception cref="DokanException">If the mount fails.</exception>
+        [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed")]
         public static void Mount(this IDokanOperations operations, string mountPoint, DokanOptions mountOptions,
             int threadCount, int version, TimeSpan timeout, string uncName, ILogger logger = null)
         {
@@ -190,6 +197,8 @@ namespace DokanNet
         /// <param name="sectorSize">Sector Size of the volume. This will behave on the file size.</param>
         /// <param name="logger"><see cref="ILogger"/> that will log all DokanNet debug informations.</param>
         /// <exception cref="DokanException">If the mount fails.</exception>
+        [SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling")]
+        [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed")]
         public static void Mount(this IDokanOperations operations, string mountPoint, DokanOptions mountOptions,
             int threadCount, int version, TimeSpan timeout, string uncName = null, int allocationUnitSize = 512,
             int sectorSize = 512, ILogger logger = null)
@@ -209,7 +218,7 @@ namespace DokanNet
             {
                 Version = (ushort) version,
                 MountPoint = mountPoint,
-                UNCName = string.IsNullOrEmpty(uncName) ? null : uncName,
+                UncName = string.IsNullOrEmpty(uncName) ? null : uncName,
                 ThreadCount = (ushort) threadCount,
                 Options = (uint) mountOptions,
                 Timeout = (uint) timeout.Milliseconds,

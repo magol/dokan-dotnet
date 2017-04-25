@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using DokanNet.Native;
 
 namespace DokanNet
@@ -9,6 +10,7 @@ namespace DokanNet
     /// \if PRIVATE
     /// <seealso cref="DOKAN_OPTIONS.Options"/>
     /// \endif
+    [SuppressMessage("Microsoft.Design", "CA1008:EnumsShouldHaveZeroValue", Justification = "Should not have any None value")]
     [Flags]
     public enum DokanOptions : long
     {

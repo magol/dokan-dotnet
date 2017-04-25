@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Security.AccessControl;
 
@@ -105,6 +106,7 @@ namespace DokanNet
         /// <param name="info">An <see cref="DokanFileInfo"/> with information about the file or directory.</param>
         /// <returns><see cref="NtStatus"/> or <see cref="DokanResult"/> appropriate to the request result.</returns>
         /// <seealso cref="WriteFile"/>
+        [SuppressMessage("Microsoft.Design", "CA1021:AvoidOutParameters", Justification = "Specified by API")]
         NtStatus ReadFile(string fileName, byte[] buffer, out int bytesRead, long offset, DokanFileInfo info);
 
         /// <summary>
@@ -119,6 +121,7 @@ namespace DokanNet
         /// <param name="info">An <see cref="DokanFileInfo"/> with information about the file or directory.</param>
         /// <returns><see cref="NtStatus"/> or <see cref="DokanResult"/> appropriate to the request result.</returns>
         /// <seealso cref="ReadFile"/>
+        [SuppressMessage("Microsoft.Design", "CA1021:AvoidOutParameters", Justification = "Specified by API")]
         NtStatus WriteFile(string fileName, byte[] buffer, out int bytesWritten, long offset, DokanFileInfo info);
 
         /// <summary>
@@ -136,6 +139,7 @@ namespace DokanNet
         /// <param name="fileInfo"><see cref="FileInformation"/> struct to fill</param>
         /// <param name="info">An <see cref="DokanFileInfo"/> with information about the file or directory.</param>
         /// <returns><see cref="NtStatus"/> or <see cref="DokanResult"/> appropriate to the request result.</returns>
+        [SuppressMessage("Microsoft.Design", "CA1021:AvoidOutParameters", Justification = "Specified by API")]
         NtStatus GetFileInformation(string fileName, out FileInformation fileInfo, DokanFileInfo info);
 
         /// <summary>
@@ -149,6 +153,7 @@ namespace DokanNet
         /// <param name="info">An <see cref="DokanFileInfo"/> with information about the file or directory.</param>
         /// <returns><see cref="NtStatus"/> or <see cref="DokanResult"/> appropriate to the request result.</returns>
         /// <seealso cref="FindFilesWithPattern"/>
+        [SuppressMessage("Microsoft.Design", "CA1021:AvoidOutParameters", Justification = "Specified by API")]
         NtStatus FindFiles(string fileName, out IList<FileInformation> files, DokanFileInfo info);
 
         /// <summary>
@@ -160,6 +165,7 @@ namespace DokanNet
         /// <param name="info">An <see cref="DokanFileInfo"/> with information about the file or directory.</param>
         /// <returns><see cref="NtStatus"/> or <see cref="DokanResult"/> appropriate to the request result.</returns>
         /// <seealso cref="FindFiles"/>
+        [SuppressMessage("Microsoft.Design", "CA1021:AvoidOutParameters", Justification = "Specified by API")]
         NtStatus FindFilesWithPattern(
             string fileName,
             string searchPattern,
@@ -308,6 +314,7 @@ namespace DokanNet
         /// <returns><see cref="NtStatus"/> or <see cref="DokanResult"/> appropriate to the request result.</returns>
         /// \see <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa364937(v=vs.85).aspx"> GetDiskFreeSpaceEx function (MSDN)</a>
         /// <seealso cref="GetVolumeInformation"/>
+        [SuppressMessage("Microsoft.Design", "CA1021:AvoidOutParameters", Justification = "Specified by API")]
         NtStatus GetDiskFreeSpace(
             out long freeBytesAvailable,
             out long totalNumberOfBytes,
@@ -339,6 +346,7 @@ namespace DokanNet
         /// <param name="info">An <see cref="DokanFileInfo"/> with information about the file or directory.</param>
         /// <returns><see cref="NtStatus"/> or <see cref="DokanResult"/> appropriate to the request result.</returns>
         /// \see <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa364993(v=vs.85).aspx"> GetVolumeInformation function (MSDN)</a>
+        [SuppressMessage("Microsoft.Design", "CA1021:AvoidOutParameters", Justification = "Specified by API")]
         NtStatus GetVolumeInformation(
             out string volumeLabel,
             out FileSystemFeatures features,
@@ -357,6 +365,7 @@ namespace DokanNet
         /// <returns><see cref="NtStatus"/> or <see cref="DokanResult"/> appropriate to the request result.</returns>
         /// <seealso cref="SetFileSecurity"/>
         /// \see <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa446639(v=vs.85).aspx">GetFileSecurity function (MSDN)</a>
+        [SuppressMessage("Microsoft.Design", "CA1021:AvoidOutParameters", Justification = "Specified by API")]
         NtStatus GetFileSecurity(
             string fileName,
             out FileSystemSecurity security,
@@ -411,6 +420,7 @@ namespace DokanNet
         /// <returns>Return <see cref="NtStatus"/> or <see cref="DokanResult"/> appropriate to the request result.</returns>
         /// \see <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa364424(v=vs.85).aspx">FindFirstStreamW function (MSDN)</a>
         /// \see <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa365993(v=vs.85).aspx">About KTM (MSDN)</a>
+        [SuppressMessage("Microsoft.Design", "CA1021:AvoidOutParameters", Justification = "Specified by API")]
         NtStatus FindStreams(string fileName, out IList<FileInformation> streams, DokanFileInfo info);
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Runtime.InteropServices;
 
 namespace DokanNet.Native
 {
@@ -17,6 +18,7 @@ namespace DokanNet.Native
     /// Se <see cref="IDokanOperations"/> for more information about the fields.
     /// </summary>
     /// <remarks>This is the same struct as <c>_DOKAN_OPERATIONS</c> (dokan.h) in the C++ version of Dokan.</remarks>
+    [SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields", Justification = "Only for internal use")]
     [StructLayout(LayoutKind.Sequential, Pack = 4)]
     internal struct DOKAN_OPERATIONS
     {

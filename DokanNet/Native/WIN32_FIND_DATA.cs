@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Runtime.InteropServices;
 using FILETIME = System.Runtime.InteropServices.ComTypes.FILETIME;
 
@@ -24,20 +25,53 @@ namespace DokanNet.Native
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode, Pack = 4)]
     internal struct WIN32_FIND_DATA
     {
+        private FileAttributes dwFileAttributes;
+        private FILETIME ftCreationTime;
+        private FILETIME ftLastAccessTime;
+        private FILETIME ftLastWriteTime;
+        /// <summary>
+        /// The high-order DWORD value of the file size, in bytes.
+        /// 
+        /// This value is zero unless the file size is greater than MAXDWORD.
+        /// 
+        /// The size of the file is equal to (nFileSizeHigh* (MAXDWORD+1)) + nFileSizeLow.
+        /// </summary>
+        private uint nFileSizeHigh;
+        /// <summary>
+        /// The low-order DWORD value of the file size, in bytes.
+        /// </summary>
+        private uint nFileSizeLow;
+        private readonly uint dwReserved0;
+        private readonly uint dwReserved1;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
+        private string cFileName;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 14)]
+        private readonly string cAlternateFileName;
+
         /// <summary>
         /// The file attributes of a file.
         /// 
         /// For possible values and their descriptions, see <see cref="FileAttributes"/>.
-        /// The <see cref="FileAttributes.SparseFile"/> attribute on the file is set if any of 
+        /// The <see cref="System.IO.FileAttributes.SparseFile"/> attribute on the file is set if any of 
         /// the streams of the file have ever been sparse.
         /// </summary>
-        public FileAttributes dwFileAttributes;
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        public FileAttributes FileAttributes
+        {
+            get => dwFileAttributes;
+            set => dwFileAttributes = value;
+        }
 
         /// <summary>
         /// A <see cref="FILETIME"/> structure that specifies when a file or directory was created.
         /// If the underlying file system does not support creation time, this member is zero.
         /// </summary>
-        public FILETIME ftCreationTime;
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        public FILETIME CreationTime
+        {
+            get => ftCreationTime;
+            set => ftCreationTime = value;
+        }
 
         /// <summary>
         /// A <see cref="FILETIME"/> structure.
@@ -50,7 +84,12 @@ namespace DokanNet.Native
         /// On the FAT file system, the specified date for both files and directories is correct, 
         /// but the time of day is always set to midnight.
         /// </summary>
-        public FILETIME ftLastAccessTime;
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        public FILETIME LastAccessTime
+        {
+            get => ftLastAccessTime;
+            set => ftLastAccessTime = value;
+        }
 
         /// <summary>
         /// A <see cref="FILETIME"/> structure.
@@ -64,46 +103,33 @@ namespace DokanNet.Native
         /// If the underlying file system does not support last write time, 
         /// this member is zero.
         /// </summary>
-        public FILETIME ftLastWriteTime;
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        public FILETIME LastWriteTime
+        {
+            get => ftLastWriteTime;
+            set => ftLastWriteTime = value;
+        }
 
         /// <summary>
-        /// The high-order DWORD value of the file size, in bytes.
-        /// 
-        /// This value is zero unless the file size is greater than MAXDWORD.
-        /// 
-        /// The size of the file is equal to (nFileSizeHigh* (MAXDWORD+1)) + nFileSizeLow.
+        /// The file size, in byte.
         /// </summary>
-        public uint nFileSizeHigh;
-
-        /// <summary>
-        /// The low-order DWORD value of the file size, in bytes.
-        /// </summary>
-        public uint nFileSizeLow;
-
-        /// <summary>
-        /// If the <see cref="dwFileAttributes"/> member includes the <see cref="FileAttributes.ReparsePoint"/> attribute, 
-        /// this member specifies the reparse point tag. 
-        /// Otherwise, this value is undefined and should not be used.
-        /// </summary>
-        /// \see <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa365511(v=vs.85).aspx">Reparse Point Tags (MSDN)</a>
-        private readonly uint dwReserved0;
-
-        /// <summary>
-        /// Reserved for future use.
-        /// </summary>
-        private readonly uint dwReserved1;
+        public long FileSize
+        {
+            set
+            {
+                nFileSizeLow = (uint) (value & 0xffffffff);
+                nFileSizeHigh = (uint) (value >> 32);
+            }
+        }
 
         /// <summary>
         /// The name of the file.
         /// </summary>
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
-        public string cFileName;
-
-        /// <summary>
-        /// An alternative name for the file.
-        /// This name is in the classic 8.3 file name format.
-        /// </summary>
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 14)]
-        private readonly string cAlternateFileName;
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        public string FileName
+        {
+            get => cFileName;
+            set => cFileName = value;
+        }
     }
 }

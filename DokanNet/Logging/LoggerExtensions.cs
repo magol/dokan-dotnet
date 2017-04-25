@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text;
 
@@ -16,6 +17,7 @@ namespace DokanNet.Logging
         /// <param name="category">Optional category to add to the log message.</param>
         /// <param name="loggerName">Optional log name to at to the log message.</param>
         /// <returns>A formated log message.</returns>
+        [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed")]
         public static string FormatMessageForLogging(
             this string message,
             string category = null,
@@ -32,6 +34,7 @@ namespace DokanNet.Logging
         /// <param name="category">Optional category to add to the log message.</param>
         /// <param name="loggerName">Optional log name to at to the log message.</param>
         /// <returns>A formated log message.</returns>
+        [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed")]
         public static string FormatMessageForLogging(
             this string message,
             bool addDateTime = false,
@@ -41,7 +44,7 @@ namespace DokanNet.Logging
             var stringBuilder = new StringBuilder();
             if (addDateTime)
             {
-                stringBuilder.AppendFormat("{0} - ", DateTime.Now.ToString(CultureInfo.InvariantCulture));
+                stringBuilder.AppendFormat(CultureInfo.CurrentCulture, "{0} - ", DateTime.Now.ToString(CultureInfo.CurrentCulture));
             }
 
             if (!string.IsNullOrEmpty(loggerName))

@@ -516,46 +516,46 @@ namespace DokanNet.Tests
 
         internal static TimeSpan IODelay = TimeSpan.FromSeconds(19);
 
-        [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
+        //[SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
         internal string FileName => Named(fileName);
 
-        [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
+        //[SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
         internal string DestinationFileName => Named(destinationFileName);
 
-        [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
+        //[SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
         internal string DestinationBackupFileName => Named(destinationBackupFileName);
 
-        [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
+        //[SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
         internal string DirectoryName => Named(directoryName);
 
-        [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
+        //[SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
         internal string Directory2Name => Named(directory2Name);
 
-        [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
+        //[SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
         internal string DestinationDirectoryName => Named(destinationDirectoryName);
 
-        [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
+        //[SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
         internal string SubDirectoryName => Named(subDirectoryName);
 
-        [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
+        //[SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
         internal string SubDirectory2Name => Named(subDirectory2Name);
 
-        [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
+        //[SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
         internal string DestinationSubDirectoryName => Named(destinationSubDirectoryName);
 
-        [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
+        //[SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
         internal FileInformation[] RootDirectoryItems => Named(rootDirectoryItems);
 
-        [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
+        //[SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
         internal FileInformation[] DirectoryItems => Named(directoryItems);
 
-        [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
+        //[SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
         internal FileInformation[] Directory2Items => Named(directory2Items);
 
-        [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
+        //[SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
         internal FileInformation[] SubDirectoryItems => Named(subDirectoryItems);
 
-        [SuppressMessage("Microsoft.Performance", "CA1810:InitializeReferenceTypeStaticFieldsInline")]
+        //[SuppressMessage("Microsoft.Performance", "CA1810:InitializeReferenceTypeStaticFieldsInline")]
         static DokanOperationsFixture()
         {
             InitInstance(string.Empty);
@@ -1363,7 +1363,7 @@ namespace DokanNet.Tests
                 .Verifiable();
         }
 
-        [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "security", Justification = "Reserved for future use")]
+        //[SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "security", Justification = "Reserved for future use")]
         internal void ExpectSetFileSecurity(string path, FileSystemSecurity security)
         {
             _operations

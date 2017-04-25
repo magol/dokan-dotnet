@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 
 namespace DokanNet.Logging
 {
@@ -12,8 +13,16 @@ namespace DokanNet.Logging
         /// <summary>
         /// Initializes a new instance of the <see cref="ConsoleLogger"/> class.
         /// </summary>
+        public ConsoleLogger()
+            :this(string.Empty)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ConsoleLogger"/> class.
+        /// </summary>
         /// <param name="loggerName">Optional name to be added to each log line.</param>
-        public ConsoleLogger(string loggerName = "")
+        public ConsoleLogger(string loggerName)
         {
             _loggerName = loggerName;
         }
@@ -55,7 +64,7 @@ namespace DokanNet.Logging
             {
                 Console.ForegroundColor = newColor;
                 if (args.Length > 0)
-                    message = string.Format(message, args);
+                    message = string.Format(CultureInfo.CurrentCulture, message, args);
                 Console.WriteLine(message.FormatMessageForLogging(true, loggerName: _loggerName));
             }
             finally

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace DokanNet
@@ -46,6 +47,8 @@ namespace DokanNet
         /// <param name="name">The string that will be tested.</param>
         /// <param name="ignoreCase">When set to true a case insensitive match will be performed.</param>
         /// <returns>Returns true if Expression match Name, false otherwise.</returns>
+        [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
+        [SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", MessageId = "InExpression")]
         public static bool DokanIsNameInExpression(string expression, string name, bool ignoreCase)
         {
             if (expression == null)

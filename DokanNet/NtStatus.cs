@@ -1,9 +1,13 @@
-﻿namespace DokanNet
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace DokanNet
 {
     /// <summary>
     /// NT status values.
     /// </summary>
     /// \see <a href="https://msdn.microsoft.com/en-us/library/cc704588.aspx">NTSTATUS Values (MSDN)</a>
+    [SuppressMessage("Microsoft.Design", "CA1028:EnumStorageShouldBeInt32", Justification = "Specified by API")]
+    [SuppressMessage("Microsoft.Naming", "CA1717:OnlyFlagsEnumsShouldHavePluralNames", Justification = "It's not plural")]
     public enum NtStatus : long
     {
         // ***********
@@ -303,6 +307,7 @@
         /// Warning - {EXCEPTION} Alignment Fault A data type misalignment was detected 
         /// in a load or store instruction.
         /// </summary>
+        [SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", MessageId = "Datatype")]
         DatatypeMisalignment = 0x80000002,
 
         /// <summary>
@@ -745,11 +750,13 @@
         /// Error - An EA operation failed because the name or EA index is
         /// invalid.
         /// </summary>
+        [SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", MessageId = "NonExistent")]
         NonExistentEaEntry = 0xc0000051,
 
         /// <summary>
         /// Error - The file for which EAs were requested has no EAs.
         /// </summary>
+        [SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", MessageId = "EasOn")]
         NoEasOnFile = 0xc0000052,
 
         /// <summary>
@@ -820,12 +827,14 @@
         /// Error - No logon servers are currently available to service the
         /// logon request.
         /// </summary>
+        [SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", MessageId = "Logon")]
         NoLogonServers = 0xc000005e,
 
         /// <summary>
         /// Error - A specified logon session does not exist. It might already
         /// have been terminated.
         /// </summary>
+        [SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", MessageId = "Logon")]
         NoSuchLogonSession = 0xc000005f,
 
         /// <summary>
@@ -909,6 +918,7 @@
         /// Error - The attempted logon is invalid. This is either due to a bad
         /// username or authentication information.
         /// </summary>
+        [SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", MessageId = "Logon")]
         LogonFailure = 0xc000006d,
 
         /// <summary>
@@ -923,6 +933,7 @@
         /// Error - The user account has time restrictions and cannot be logged
         /// onto at this time.
         /// </summary>
+        [SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", MessageId = "Logon")]
         InvalidLogonHours = 0xc000006f,
 
         /// <summary>
@@ -1476,6 +1487,7 @@
         /// Error - The <c>Netlogon</c> service cannot start because another <c>Netlogon</c>
         /// service running in the domain conflicts with the specified role.
         /// </summary>
+        [SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", MessageId = "Logon")]
         LogonServer = 0xc0000132,
 
         /// <summary>
@@ -1607,6 +1619,7 @@
         /// <summary>
         /// Error - The file must be checked out before saving changes.
         /// </summary>
+        [SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", MessageId = "CheckOut")]
         CheckOutRequired = 0xc0000902,
 
         /// <summary>

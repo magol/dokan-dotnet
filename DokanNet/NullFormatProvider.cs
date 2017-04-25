@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace DokanNet
 {
@@ -10,6 +11,7 @@ namespace DokanNet
         /// <summary>
         /// A Singleton instance of this class.
         /// </summary>
+        [SuppressMessage("Microsoft.Security", "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes")]
         public static readonly FormatProviders DefaultFormatProvider = new FormatProviders();
 
         /// <summary>
@@ -17,9 +19,11 @@ namespace DokanNet
         /// </summary>
         public static readonly string NullStringRepresentation = "<null>";
 
+
         /// <summary>
         /// Prevents a default instance of the <see cref="FormatProviders"/> class from being created. 
         /// </summary>
+        [SuppressMessage("Microsoft.Usage", "CA2222:DoNotDecreaseInheritedMemberVisibility", Justification = "Should not be able to create more then one instance")]
         private FormatProviders()
         {
         }
@@ -29,10 +33,12 @@ namespace DokanNet
         /// </summary>
         /// <param name="formattable">The <see cref="FormattableString"/> to format.</param>
         /// <returns>The formated string.</returns>
-#pragma warning disable 3001
         public static string DokanFormat(FormattableString formattable)
-            => formattable.ToString(DefaultFormatProvider);
-#pragma warning restore 3001
+        {
+            return formattable == null
+                ? string.Empty
+                : formattable.ToString(DefaultFormatProvider);
+        }
 
         /// <summary>
         /// Returns an object that provides formatting services for the
@@ -40,13 +46,15 @@ namespace DokanNet
         /// </summary>
         /// <returns>An instance of the object specified by 
         /// <paramref name="formatType" />, if the 
-        /// <see cref="T:System.IFormatProvider" /> implementation can supply
+        /// <see cref="IFormatProvider" /> implementation can supply
         /// that type of object; otherwise, <c>null</c>.</returns>
         /// <param name="formatType">An object that specifies the type of format
         /// object to return. </param>
         public object GetFormat(Type formatType)
         {
-            return formatType == typeof(ICustomFormatter) ? this : null;
+            return formatType == typeof(ICustomFormatter) 
+                ? this 
+                : null;
         }
 
         /// <summary>
