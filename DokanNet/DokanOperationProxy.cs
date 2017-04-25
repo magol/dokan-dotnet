@@ -667,7 +667,7 @@ namespace DokanNet
                 var data = new WIN32_FIND_STREAM_DATA
                 {
                     StreamSize = fi.Length,
-                    cStreamName = fi.FileName
+                    StreamName = fi.FileName
                 };
                 //ZeroMemory(&data, sizeof(WIN32_FIND_DATAW));
 
