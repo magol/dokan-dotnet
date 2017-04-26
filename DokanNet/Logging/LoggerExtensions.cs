@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace DokanNet.Logging
@@ -54,11 +55,73 @@ namespace DokanNet.Logging
 
             if (!string.IsNullOrEmpty(category))
             {
-                stringBuilder.Append($"{category} ");
+                stringBuilder.Append(string.Format(CultureInfo.CurrentCulture, "{0} ", category));
             }
 
             stringBuilder.Append(message);
             return stringBuilder.ToString();
+        }
+
+        /// <summary>
+        /// Format a <see cref="FileInformation"/> for the log.
+        /// </summary>
+        /// <param name="fi">The <see cref="FileInformation"/> to format.</param>
+        /// <returns>A string representation form the log</returns>
+        internal static string FormatForLogging(this FileInformation fi)
+        {
+            return string.Format(CultureInfo.CurrentCulture,
+                @"\t{0}\t{1}
+\t\t{2}\t{3}
+\t\t{4}\t{5}
+\t\t{6}\t{7}
+\t\t{8}\t{9}
+\t\t{10}\t{11}", nameof(fi.FileName), fi.FileName, nameof(fi.Attributes), fi.Attributes, nameof(fi.CreationTime),
+                fi.CreationTime, nameof(fi.LastAccessTime), fi.LastAccessTime, nameof(fi.LastWriteTime),
+                fi.LastWriteTime,
+                nameof(fi.Length), fi.Length);
+        }
+
+#if !NET40
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+        internal static void DebugPairValuesLevel0( this ILogger logger, object value, [CallerMemberName] string memberName = "")
+        {
+            logger.Debug(string.Format(CultureInfo.CurrentCulture, "{0} : {1}", memberName, value));
+        }
+
+#if !NET40
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+        internal static void DebugPairValuesLevel1(this ILogger logger, object value, string memberName)
+        {
+            logger.Debug(string.Format(CultureInfo.CurrentCulture, "\t{0}\t{1}", memberName, value));
+        }
+
+#if !NET40
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+        internal static void DebugPairValuesLevel2(this ILogger logger, object value, string memberName)
+        {
+            logger.Debug(string.Format(CultureInfo.CurrentCulture
+                , "\t\t{0}\t{1}", memberName, value));
+        }
+
+#if !NET40
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+        internal static void DebugReturn(this ILogger logger, string value, NtStatus result, [CallerMemberName] string memberName = "")
+        {
+            logger.Debug(string.Format(CultureInfo.CurrentCulture
+                , "{0} : {1} Return : {2}", memberName, value, result));
+        }
+
+#if !NET40
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+        internal static void Exception(this ILogger logger, string value, Exception exception, [CallerMemberName] string memberName = "")
+        {
+            logger.Error(string.Format(CultureInfo.CurrentCulture,
+                "{0} : {1} Throw : {2}", memberName, value, exception));
         }
     }
 }

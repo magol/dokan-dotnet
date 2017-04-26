@@ -14,7 +14,7 @@ namespace DokanNetMirror
 {
     internal class Mirror : IDokanOperations
     {
-        private readonly string _path;
+        private readonly string path;
 
         private const FileAccess DataAccess = FileAccess.ReadData | FileAccess.WriteData | FileAccess.AppendData |
                                               FileAccess.Execute |
@@ -31,12 +31,12 @@ namespace DokanNetMirror
         {
             if (!Directory.Exists(path))
                 throw new ArgumentException(nameof(path));
-            _path = path;
+            this.path = path;
         }
 
         private string GetPath(string fileName)
         {
-            return _path + fileName;
+            return path + fileName;
         }
 
         private NtStatus Trace(string method, string fileName, DokanFileInfo info, NtStatus result,
@@ -549,7 +549,7 @@ namespace DokanNetMirror
 
         public NtStatus GetDiskFreeSpace(out long freeBytesAvailable, out long totalNumberOfBytes, out long totalNumberOfFreeBytes, DokanFileInfo info)
         {
-            var dinfo = DriveInfo.GetDrives().Single(di => string.Equals(di.RootDirectory.Name, Path.GetPathRoot(_path + "\\"), StringComparison.OrdinalIgnoreCase));
+            var dinfo = DriveInfo.GetDrives().Single(di => string.Equals(di.RootDirectory.Name, Path.GetPathRoot(path + "\\"), StringComparison.OrdinalIgnoreCase));
 
             freeBytesAvailable = dinfo.TotalFreeSpace;
             totalNumberOfBytes = dinfo.TotalSize;

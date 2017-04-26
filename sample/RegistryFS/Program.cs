@@ -12,11 +12,11 @@ namespace RegistryFS
     {
         #region DokanOperations member
 
-        private readonly Dictionary<string, RegistryKey> _topDirectory;
+        private readonly Dictionary<string, RegistryKey> topDirectory;
 
         public RFS()
         {
-            _topDirectory = new Dictionary<string, RegistryKey>
+            topDirectory = new Dictionary<string, RegistryKey>
             {
                 ["ClassesRoot"] = Registry.ClassesRoot,
                 ["CurrentUser"] = Registry.CurrentUser,
@@ -68,11 +68,11 @@ namespace RegistryFS
             var topname = name.Substring(1, top);
             var sub = name.IndexOf('\\', 1);
 
-            if (_topDirectory.ContainsKey(topname))
+            if (topDirectory.ContainsKey(topname))
             {
                 return sub == -1
-                    ? _topDirectory[topname]
-                    : _topDirectory[topname].OpenSubKey(name.Substring(sub + 1));
+                    ? topDirectory[topname]
+                    : topDirectory[topname].OpenSubKey(name.Substring(sub + 1));
             }
             return null;
         }
@@ -92,7 +92,7 @@ namespace RegistryFS
             files = new List<FileInformation>();
             if (filename == "\\")
             {
-                foreach (var name in _topDirectory.Keys)
+                foreach (var name in topDirectory.Keys)
                 {
                     var finfo = new FileInformation
                     {

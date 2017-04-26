@@ -56,16 +56,18 @@ This is a .NET wrapper over Dokan, and allows you to create your own file system
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net4.0'">
     <PackageReference Include="StringInterpolationBridgeStrong" Version="0.9.1" />
+    <PackageReference Include="Microsoft.Bcl" Version="1.1.10" />
   </ItemGroup>
 
   <ItemGroup>
     <None Remove="CustomDictionary.xml" />
     <AdditionalFiles Include="CustomDictionary.xml" />
   </ItemGroup>
-  
+
+  <!--Enable this to run Code Analysis-->
   <PropertyGroup>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <!--Set to True to run Code Analysis-->
     <RunCodeAnalysis>true</RunCodeAnalysis>
+    <DebugType>full</DebugType>
   </PropertyGroup>
 </Project>

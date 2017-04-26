@@ -22,14 +22,14 @@ namespace DokanNet
         /// <summary>
         /// Used internally, never modify.
         /// </summary>
-        private readonly ulong _dokanContext;
+        private readonly ulong dokanContext;
 
         /// <summary>
         /// A pointer to the <see cref="DOKAN_OPTIONS"/> which was passed to <see cref="DokanNet.Native.NativeMethods.DokanMain"/>.
         /// </summary>
-        private readonly IntPtr _dokanOptions;
+        private readonly IntPtr dokanOptions;
 
-        private readonly uint _processId;
+        private readonly uint processId;
 
         [MarshalAs(UnmanagedType.U1)] private bool _isDirectory;
 
@@ -80,7 +80,7 @@ namespace DokanNet
         /// Process id for the thread that originally requested a given I/O
         /// operation.
         /// </summary>
-        public int ProcessId => (int)_processId;
+        public int ProcessId => (int)processId;
 
         /// <summary>
         /// Gets or sets a value indicating whether it requesting a directory
@@ -166,13 +166,15 @@ namespace DokanNet
         /// <param name="other">The object to compare with the current instance. </param>
         /// <returns><c>true</c> if <paramref name="other" /> and this instance are represent the same value; 
         /// otherwise, <c>false</c>. </returns>
-        private bool Equals(DokanFileInfo other)
+        public bool Equals(DokanFileInfo other)
         {
+            if (ReferenceEquals(null, other)) return false;
+
             return
                 _context == other._context &&
-                _dokanContext == other._dokanContext &&
-                _dokanOptions.Equals(other._dokanOptions) &&
-                _processId == other._processId &&
+                dokanContext == other.dokanContext &&
+                dokanOptions.Equals(other.dokanOptions) &&
+                processId == other.processId &&
                 _isDirectory == other._isDirectory &&
                 _deleteOnClose == other._deleteOnClose &&
                 _pagingIo == other._pagingIo &&
@@ -200,9 +202,9 @@ namespace DokanNet
             unchecked
             {
                 var hashCode = _context.GetHashCode();
-                hashCode = (hashCode * 397) ^ _dokanContext.GetHashCode();
-                hashCode = (hashCode * 397) ^ _dokanOptions.GetHashCode();
-                hashCode = (hashCode * 397) ^ (int) _processId;
+                hashCode = (hashCode * 397) ^ dokanContext.GetHashCode();
+                hashCode = (hashCode * 397) ^ dokanOptions.GetHashCode();
+                hashCode = (hashCode * 397) ^ (int) processId;
                 hashCode = (hashCode * 397) ^ _isDirectory.GetHashCode();
                 hashCode = (hashCode * 397) ^ _deleteOnClose.GetHashCode();
                 hashCode = (hashCode * 397) ^ _pagingIo.GetHashCode();
