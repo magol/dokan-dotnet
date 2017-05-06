@@ -9,46 +9,30 @@ namespace DokanNet.Native
     /// into the user mode driver.
     /// https://msdn.microsoft.com/en-us/library/windows/hardware/ff564879(v=vs.85).aspx
     /// </summary>
-    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto, Pack = 8)]
-    public struct UNICODE_STRING
+    [StructLayout(LayoutKind.Sequential)]
+    public struct UNICODE_STRING : IDisposable
     {
-        public ushort _length;
-        public ushort _maximumLength;
-
-        /// <summary>
-        /// Pointer to a buffer used to contain a string of wide characters.
-        /// </summary>
-        [MarshalAs(UnmanagedType.LPWStr)]
-        public IntPtr _buffer;
-
-        /// <summary>
-        /// The length, in bytes, of the string stored in <see cref="Buffer"/>.
-        /// </summary>
-        //public ushort Length => _length;
-
-        /// <summary>
-        /// The length, in bytes, of <see cref="Buffer"/>.
-        /// </summary>
-        //public ushort MaximumLength => _maximumLength;
-
+        public ushort Length;
+        public ushort MaximumLength;
+        private IntPtr buffer;
 
 
         public UNICODE_STRING(string s)
         {
-            _length = (ushort) (s.Length * 2);
-            _maximumLength = (ushort) (_length + 2);
-            _buffer = Marshal.StringToHGlobalUni(s);
+            Length = (ushort) (s.Length * 2);
+            MaximumLength = (ushort) (Length + 2);
+            buffer = Marshal.StringToHGlobalUni(s);
         }
 
         public void Dispose()
         {
-            Marshal.FreeHGlobal(_buffer);
-            _buffer = IntPtr.Zero;
+            Marshal.FreeHGlobal(buffer);
+            buffer = IntPtr.Zero;
         }
 
         public override string ToString()
         {
-            return Marshal.PtrToStringUni(_buffer)
+            return Marshal.PtrToStringUni(buffer)
                    ?? string.Empty;
         }
 

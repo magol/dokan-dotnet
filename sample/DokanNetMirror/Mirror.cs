@@ -27,6 +27,11 @@ namespace DokanNetMirror
 
         private ConsoleLogger logger = new ConsoleLogger("[Mirror] ");
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="path"></param>
+        /// <exception cref="ArgumentException">path is null</exception>
         public Mirror(string path)
         {
             if (!Directory.Exists(path))
@@ -244,6 +249,18 @@ namespace DokanNetMirror
                 result);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <param name="access"></param>
+        /// <param name="share"></param>
+        /// <param name="mode"></param>
+        /// <param name="options"></param>
+        /// <param name="attributes"></param>
+        /// <param name="info"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException">Not implemented</exception>
         public NtStatus CreateFile(string fileName, FileAccess access, FileShare share, FileMode mode, FileOptions options,
             FileAttributes attributes, DokanFileInfo info)
         {
